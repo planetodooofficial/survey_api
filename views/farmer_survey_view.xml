@@ -29,6 +29,7 @@
         <field name="arch" type="xml">
             <form string="Farmer's Survey">
                 <header>
+                    <button name="get_farmer_survey_details" type="object" string="Get Response" class="oe_highlight"/>
                 </header>
                 <sheet>
                     <group>
@@ -52,13 +53,6 @@
                             </field>
                         </group>
                         <group>
-                            <field name="farmer_photo_1"/>
-                            <field name="farmer_photo_2"/>
-                            <field name="farmer_photo_3"/>
-                            <field name="farmer_photo_4"/>
-                            <field name="farmer_photo_5"/>
-                        </group>
-                        <group>
                             <field name="farmer_national_id"/>
                             <field name="farmer_id"/>
                             <field name="farmer_farming_list"/>
@@ -70,6 +64,13 @@
                             <field name="comments"/>
                             <field name="special_info_farmer"/>
                         </group>
+                    </group>
+                    <group>
+                        <field name="farmer_photo_1" widget="image"/>
+                        <field name="farmer_photo_2" widget="image"/>
+                        <field name="farmer_photo_3" widget="image"/>
+                        <field name="farmer_photo_4" widget="image"/>
+                        <field name="farmer_photo_5" widget="image"/>
                     </group>
                 </sheet>
             </form>
