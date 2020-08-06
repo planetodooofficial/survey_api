@@ -51,8 +51,7 @@
                             <field name="stove_condition"/>
                         </group>
                         <group>
-                            <field name="kitchen_gps_longitude"/>
-                            <field name="kitchen_gps_latitude"/>
+                            <field name="kitchen_gps_location"/>
                         </group>
                         <group>
                             <field name="same_stove_used"/>
