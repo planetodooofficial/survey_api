@@ -1,0 +1,89 @@
+<odoo>
+
+    <!-- Farmer Survey   -->
+
+    <record id="farmer_survey_details_action_id" model="ir.actions.act_window">
+        <field name="name">Farmer Survey</field>
+        <field name="res_model">farmer.survey</field>
+        <field name="view_mode">tree,form</field>
+        <field name="help" type="html">
+            <p class="oe_view_nocontent_create">Farmer's Survey Details</p>
+        </field>
+    </record>
+
+    <record id="farmer_survey_tree_view_id" model="ir.ui.view">
+        <field name="name">Farmer Survey Tree View</field>
+        <field name="model">farmer.survey</field>
+        <field name="arch" type="xml">
+            <tree string="Farmer's Survey">
+                <field name="farmer_survey_id"/>
+                <field name="farmer_name"/>
+                <field name="village"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="farmer_survey_form_view_id" model="ir.ui.view">
+        <field name="name">Farmer's Survey Form View</field>
+        <field name="model">farmer.survey</field>
+        <field name="arch" type="xml">
+            <form string="Farmer's Survey">
+                <header>
+                </header>
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="farmer_survey_id"/>
+                            <field name="epa"/>
+                            <field name="village"/>
+                            <field name="district"/>
+                            <field name="farmer_name"/>
+                            <field name="farmer_age"/>
+                            <field name="is_married"/>
+                            <field name="farmer_wife_name"/>
+                            <field name="farmer_wife_age"/>
+                            <field name="farmer_children"/>
+                            <field name="no_of_kids_ids">
+                                <tree string="No. Of Children" widget="one2many">
+                                    <field name="farmer_kid_name"/>
+                                    <field name="farmer_kid_age"/>
+                                    <field name="farmer_kid_gender"/>
+                                </tree>
+                            </field>
+                        </group>
+                        <group>
+                            <field name="farmer_photo_1"/>
+                            <field name="farmer_photo_2"/>
+                            <field name="farmer_photo_3"/>
+                            <field name="farmer_photo_4"/>
+                            <field name="farmer_photo_5"/>
+                        </group>
+                        <group>
+                            <field name="farmer_national_id"/>
+                            <field name="farmer_id"/>
+                            <field name="farmer_farming_list"/>
+                            <field name="farmer_fruit_trees"/>
+                            <field name="no_of_tres_for_planting"/>
+                            <field name="efficient_cook_stove"/>
+                            <field name="get_firewood_from"/>
+                            <field name="hours_taken_per_week"/>
+                            <field name="comments"/>
+                            <field name="special_info_farmer"/>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <menuitem id="survey_details_id"
+              name="Survey Details"
+              groups="base.group_user"/>
+
+    <menuitem id="farmer_survey_id"
+              parent="survey_details_id"
+              name="Farmers Survey"
+              groups="base.group_user"
+              action="farmer_survey_details_action_id"/>
+
+</odoo>

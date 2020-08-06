@@ -1,0 +1,5 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_farmer_survey,farmer.survey,model_farmer_survey,base.group_user,1,1,1,1
+access_tree_survey,tree.survey,model_tree_survey,base.group_user,1,1,1,1
+access_cook_stove_survey,cook.stove.survey,model_cook_stove_survey,base.group_user,1,1,1,1
+access_water_well_survey,water.well.survey,model_water_well_survey,base.group_user,1,1,1,1

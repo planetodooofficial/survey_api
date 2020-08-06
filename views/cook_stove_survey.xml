@@ -1,0 +1,73 @@
+<odoo>
+
+    <!-- Coke Stove Survey   -->
+
+    <record id="cook_stove_survey_details_action_id" model="ir.actions.act_window">
+        <field name="name">Cook Stove Survey</field>
+        <field name="res_model">cook.stove.survey</field>
+        <field name="view_mode">tree,form</field>
+        <field name="help" type="html">
+            <p class="oe_view_nocontent_create">Cook Stove Survey Details</p>
+        </field>
+    </record>
+
+    <record id="cook_stove_survey_tree_view_id" model="ir.ui.view">
+        <field name="name">Cook Stove Survey Tree View</field>
+        <field name="model">cook.stove.survey</field>
+        <field name="arch" type="xml">
+            <tree string="Cook Stove Survey">
+                <field name="cook_stove_survey_id"/>
+                <field name="farmer_id"/>
+                <field name="cooking_method"/>
+                <field name="stove_id"/>
+                <field name="name_of_village"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="trees_survey_form_view_id" model="ir.ui.view">
+        <field name="name">Cook Stove Survey Form View</field>
+        <field name="model">cook.stove.survey</field>
+        <field name="arch" type="xml">
+            <form string="Cook Stove Survey">
+                <header>
+                </header>
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="cook_stove_survey_id"/>
+                            <field name="farmer_id"/>
+                            <field name="t_a"/>
+                            <field name="name_of_chief"/>
+                            <field name="name_of_village"/>
+                        </group>
+                        <group>
+                            <field name="type_of_kitchen"/>
+                            <field name="cooking_method"/>
+                            <field name="have_an_axe"/>
+                            <field name="per_week_walking_for_firewood"/>
+                            <field name="stove_id"/>
+                            <field name="same_stove_used"/>
+                            <field name="stove_condition"/>
+                        </group>
+                        <group>
+                            <field name="kitchen_gps_longitude"/>
+                            <field name="kitchen_gps_latitude"/>
+                        </group>
+                        <group>
+                            <field name="same_stove_used"/>
+                            <field name="same_stove_used"/>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <menuitem id="cook_stove_survey_id"
+              parent="survey_details_id"
+              name="Cook Stove Survey"
+              groups="base.group_user"
+              action="cook_stove_survey_details_action_id"/>
+
+</odoo>

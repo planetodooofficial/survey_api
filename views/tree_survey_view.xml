@@ -1,0 +1,62 @@
+<odoo>
+
+    <!-- Tree Survey   -->
+
+    <record id="trees_survey_details_action_id" model="ir.actions.act_window">
+        <field name="name">Trees Survey</field>
+        <field name="res_model">tree.survey</field>
+        <field name="view_mode">tree,form</field>
+        <field name="help" type="html">
+            <p class="oe_view_nocontent_create">Trees Survey Details</p>
+        </field>
+    </record>
+
+    <record id="trees_survey_tree_view_id" model="ir.ui.view">
+        <field name="name">Trees Survey Tree View</field>
+        <field name="model">tree.survey</field>
+        <field name="arch" type="xml">
+            <tree string="Trees Survey">
+                <field name="tree_survey_id"/>
+                <field name="tree_type"/>
+                <field name="scanned_farmer_id"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="trees_survey_form_view_id" model="ir.ui.view">
+        <field name="name">Trees Survey Form View</field>
+        <field name="model">tree.survey</field>
+        <field name="arch" type="xml">
+            <form string="Trees Survey">
+                <header>
+                </header>
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="tree_survey_id"/>
+                            <field name="scanned_farmer_id"/>
+                            <field name="tree_type"/>
+                        </group>
+                        <group>
+                            <field name="gps_longitude"/>
+                            <field name="gps_latitude"/>
+                        </group>
+                        <group>
+                            <field name="tree_image_1"/>
+                            <field name="tree_image_2"/>
+                            <field name="tree_image_3"/>
+                            <field name="survey_date"/>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <menuitem id="tress_survey_id"
+              parent="survey_details_id"
+              name="Trees Survey"
+              groups="base.group_user"
+              action="trees_survey_details_action_id"/>
+
+</odoo>
