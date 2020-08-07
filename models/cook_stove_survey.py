@@ -13,7 +13,7 @@ class cook_stove_survey(models.Model):
     _name = 'cook.stove.survey'
     _rec_name = 'cook_stove_survey_id'
 
-    cook_stove_survey_id = fields.Integer('Survey Id')
+    cook_stove_survey_id = fields.Char('Survey Id')
     farmer_id = fields.Char("Farmer's ID")
     t_a = fields.Char('T/A')
     name_of_chief = fields.Char('Name Of Chief')
@@ -103,3 +103,7 @@ class cook_stove_survey(models.Model):
                     values.update({'stove_condition': 'Yes'})
                 else:
                     values.update({'stove_condition': 'No'})
+
+                self.update(values)
+            else:
+                raise ValidationError(_("There's something wrong! Please check your request again."))

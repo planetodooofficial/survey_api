@@ -29,6 +29,7 @@
         <field name="arch" type="xml">
             <form string="Trees Survey">
                 <header>
+                    <button name="get_trees_survey_details" type="object" string="Get Response" class="oe_highlight"/>
                 </header>
                 <sheet>
                     <group>
@@ -38,8 +39,7 @@
                             <field name="tree_type"/>
                         </group>
                         <group>
-                            <field name="gps_longitude"/>
-                            <field name="gps_latitude"/>
+                            <field name="gps_location"/>
                         </group>
                         <group>
                             <field name="tree_image_1"/>

@@ -28,7 +28,8 @@
         <field name="model">water.well.survey</field>
         <field name="arch" type="xml">
             <form string="Water Well Survey">
-                <header>
+               <header>
+                    <button name="get_waterwell_survey_details" type="object" string="Get Response" class="oe_highlight"/>
                 </header>
                 <sheet>
                     <group>
@@ -43,8 +44,7 @@
                             <field name="date"/>
                         </group>
                         <group>
-                            <field name="well_gps_longitude"/>
-                            <field name="well_gps_latitude"/>
+                            <field name="well_gps_location"/>
                             <field name="id_number_well"/>
                         </group>
                         <group>
