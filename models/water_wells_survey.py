@@ -8,6 +8,7 @@ import logging
 import requests
 import json
 
+
 class water_well_survey(models.Model):
     _name = 'water.well.survey'
     _rec_name = 'water_well_survey_id'
@@ -68,21 +69,29 @@ class water_well_survey(models.Model):
                 answer_response_text = json.loads(answer_response.text)
                 values = {}
 
+                well_data_1 = answer_response_text['d']['data'][0]['F8']
+                img_1 = well_data_1.strip('data:image/jpeg;base64,')
+
+                well_data_2 = answer_response_text['d']['data'][0]['F9']
+                img_2 = well_data_2.strip('data:image/jpeg;base64,')
+
+                well_data_3 = answer_response_text['d']['data'][0]['F10']
+                img_3 = well_data_3.strip('data:image/jpeg;base64,')
+
                 values.update({
-                    'water_well_survey_id' : answer_response_text['d']['data'][0]['_id'],
+                    'water_well_survey_id': answer_response_text['d']['data'][0]['_id'],
                     'district': answer_response_text['d']['data'][0]['F1'],
-                    'TA' : answer_response_text['d']['data'][0]['F2'],
+                    'TA': answer_response_text['d']['data'][0]['F2'],
                     'village_name': answer_response_text['d']['data'][0]['F3'],
                     'first_last_name_chief': answer_response_text['d']['data'][0]['F4'],
                     'date': answer_response_text['d']['data'][0]['F5'],
                     'well_gps_location': answer_response_text['d']['data'][0]['F6'],
                     'id_number_well': answer_response_text['d']['data'][0]['F7'],
-                    'well_image_1': answer_response_text['d']['data'][0]['F8'],
-                    'well_image_2': answer_response_text['d']['data'][0]['F9'],
-                    'well_image_3': answer_response_text['d']['data'][0]['F10']
+                    'well_image_1': '/' + img_1,
+                    'well_image_2': '/' + img_2,
+                    'well_image_3': '/' + img_3
                 })
 
                 self.update(values)
             else:
                 raise ValidationError(_("There's something wrong! Please check your request again."))
-

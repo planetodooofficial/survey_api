@@ -76,6 +76,7 @@ class cook_stove_survey(models.Model):
                 values = {}
 
                 values.update({
+                    'cook_stove_survey_id': answer_response_text['d']['data'][0]['_id'],
                     'farmer_id': answer_response_text['d']['data'][0]['F2'],
                     't_a': answer_response_text['d']['data'][0]['F3'],
                     'name_of_chief': answer_response_text['d']['data'][0]['F4'],

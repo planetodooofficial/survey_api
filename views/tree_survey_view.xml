@@ -2,7 +2,7 @@
 
     <!-- Tree Survey   -->
 
-    <record id="trees_survey_details_action_id" model="ir.actions.act_window">
+    <record id="tree_survey_details_action_id" model="ir.actions.act_window">
         <field name="name">Trees Survey</field>
         <field name="res_model">tree.survey</field>
         <field name="view_mode">tree,form</field>
@@ -11,7 +11,7 @@
         </field>
     </record>
 
-    <record id="trees_survey_tree_view_id" model="ir.ui.view">
+    <record id="tree_survey_tree_view_id" model="ir.ui.view">
         <field name="name">Trees Survey Tree View</field>
         <field name="model">tree.survey</field>
         <field name="arch" type="xml">
@@ -23,7 +23,7 @@
         </field>
     </record>
 
-    <record id="trees_survey_form_view_id" model="ir.ui.view">
+    <record id="tree_survey_form_view_id" model="ir.ui.view">
         <field name="name">Trees Survey Form View</field>
         <field name="model">tree.survey</field>
         <field name="arch" type="xml">
@@ -42,9 +42,9 @@
                             <field name="gps_location"/>
                         </group>
                         <group>
-                            <field name="tree_image_1"/>
-                            <field name="tree_image_2"/>
-                            <field name="tree_image_3"/>
+                            <field name="tree_image_1" widget="image"/>
+                            <field name="tree_image_2" widget="image"/>
+                            <field name="tree_image_3" widget="image"/>
                             <field name="survey_date"/>
                         </group>
                     </group>
@@ -57,6 +57,6 @@
               parent="survey_details_id"
               name="Trees Survey"
               groups="base.group_user"
-              action="trees_survey_details_action_id"/>
+              action="tree_survey_details_action_id"/>
 
 </odoo>

@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 # Part of Odoo. See LICENSE file for full copyright and licensing details.
+import urllib
 
 from odoo import models, fields, api, _
 from odoo.exceptions import UserError, ValidationError
@@ -86,11 +87,20 @@ class farmer_survey(models.Model):
                 answer_response_text = json.loads(answer_response.text)
                 values = {}
                 children_list = []
-                photo_data_1 = answer_response_text['d']['data'][0]['F6']
-                photo_data_2 = answer_response_text['d']['data'][0]['F7']
-                photo_data_3 = answer_response_text['d']['data'][0]['F8']
-                photo_data_4 = answer_response_text['d']['data'][0]['F9']
-                photo_data_5 = answer_response_text['d']['data'][0]['F10']
+                p_data_1 = str(answer_response_text['d']['data'][0]['F6'])
+                photo_data_1 = p_data_1.strip('data:image/jpeg;base64,')
+
+                p_data_2 = str(answer_response_text['d']['data'][0]['F7'])
+                photo_data_2 = p_data_2.strip('data:image/jpeg;base64,')
+
+                p_data_3 = str(answer_response_text['d']['data'][0]['F8'])
+                photo_data_3 = p_data_3.strip('data:image/jpeg;base64,')
+
+                p_data_4 = str(answer_response_text['d']['data'][0]['F9'])
+                photo_data_4 = p_data_4.strip('data:image/jpeg;base64,')
+
+                p_data_5 = str(answer_response_text['d']['data'][0]['F10'])
+                photo_data_5 = p_data_5.strip('data:image/jpeg;base64,')
 
                 # F20 Value (What is the farmer farming on his fields?)
 
@@ -103,11 +113,11 @@ class farmer_survey(models.Model):
                     'village': answer_response_text['d']['data'][0]['F3'],
                     'farmer_name': answer_response_text['d']['data'][0]['F4'],
                     'farmer_id': answer_response_text['d']['data'][0]['F5'],
-                    'farmer_photo_1': photo_data_1,  # F6
-                    'farmer_photo_2': photo_data_2,  # F7
-                    'farmer_photo_3': photo_data_3,  # F8
-                    'farmer_photo_4': photo_data_4,  # F9
-                    'farmer_photo_5': photo_data_5,  # F10
+                    'farmer_photo_1': '/' + photo_data_1,  # F6
+                    'farmer_photo_2': '/' + photo_data_2,  # F7
+                    'farmer_photo_3': '/' + photo_data_3,  # F8
+                    'farmer_photo_4': '/' + photo_data_4,  # F9
+                    'farmer_photo_5': '/' + photo_data_5,  # F10
                     'farmer_national_id': answer_response_text['d']['data'][0]['F11'],
                     'farmer_age': int(answer_response_text['d']['data'][0]['F12']),
                     'farmer_wife_name': answer_response_text['d']['data'][0]['F14'],
@@ -130,16 +140,17 @@ class farmer_survey(models.Model):
 
                 # F17 - F19 Values (No. Of Children)
 
-                for name in answer_response_text['d']['data'][0]['F17']:
-                    for age in answer_response_text['d']['data'][0]['F18']:
-                        for gender in answer_response_text['d']['data'][0]['F19']:
-                            children_vals = [(0, 0, {
-                                'farmer_kids_details_id': self.id,
-                                'farmer_kid_name': name,
-                                'farmer_kid_age': age,
-                                'farmer_kid_gender': gender,
-                            })]
-                            values.update({'no_of_kids_ids': children_list})
+                if answer_response_text['d']['data'][0]['F13'] == 'Married':
+                    for name in answer_response_text['d']['data'][0]['F17']:
+                        for age in answer_response_text['d']['data'][0]['F18']:
+                            for gender in answer_response_text['d']['data'][0]['F19']:
+                                children_vals = [(0, 0, {
+                                    'farmer_kids_details_id': self.id,
+                                    'farmer_kid_name': name,
+                                    'farmer_kid_age': age,
+                                    'farmer_kid_gender': gender,
+                                })]
+                                values.update({'no_of_kids_ids': children_list})
 
                 # F21 Value (Does the farmer grow fruit trees?)
 

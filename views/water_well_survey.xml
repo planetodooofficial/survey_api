@@ -28,7 +28,7 @@
         <field name="model">water.well.survey</field>
         <field name="arch" type="xml">
             <form string="Water Well Survey">
-               <header>
+                <header>
                     <button name="get_waterwell_survey_details" type="object" string="Get Response" class="oe_highlight"/>
                 </header>
                 <sheet>
@@ -48,9 +48,9 @@
                             <field name="id_number_well"/>
                         </group>
                         <group>
-                            <field name="well_image_1"/>
-                            <field name="well_image_2"/>
-                            <field name="well_image_3"/>
+                            <field name="well_image_1" widget="image"/>
+                            <field name="well_image_2" widget="image"/>
+                            <field name="well_image_3" widget="image"/>
                         </group>
                         <group>
                             <field name="comments_1"/>

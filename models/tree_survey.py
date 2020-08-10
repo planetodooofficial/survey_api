@@ -14,11 +14,11 @@ class tree_survey(models.Model):
     _rec_name = 'tree_survey_id'
 
     tree_survey_id = fields.Char('Survey ID')
-    scanned_farmer_id = fields.Char("Scanned Farmer's ID", required=True)
+    scanned_farmer_id = fields.Char("Scanned Farmer's ID", required=False)
     gps_location = fields.Char('Location')
     tree_type = fields.Char('Tree Type')
-    tree_image_1 = fields.Binary('Image 1', required=True)
-    tree_image_2 = fields.Binary('Image 2', required=True)
+    tree_image_1 = fields.Binary('Image 1', required=False)
+    tree_image_2 = fields.Binary('Image 2', required=False)
     tree_image_3 = fields.Binary('Image 3')
     survey_date = fields.Char('Survey Date')
 
@@ -47,8 +47,6 @@ class tree_survey(models.Model):
 
         # Getting & Storing Survey Answers
 
-        phtoto_data_1 = ''
-
         if access_token:
             answer_url = 'https://www.earth.ff1.co.za/api/v1/Survey/5f0efbf60fdfb21193f3f5d9/answer'
             body_data = {
@@ -66,16 +64,24 @@ class tree_survey(models.Model):
                 answer_response_text = json.loads(answer_response.text)
                 values = {}
 
+                photo_data_1 = str(answer_response_text['d']['data'][0]['F12'])
+                phtoto_data_1 = photo_data_1.strip('data:image/jpeg;base64,')
+
+                photo_data_2 = str(answer_response_text['d']['data'][0]['F13'])
+                phtoto_data_2 = photo_data_2.strip('data:image/jpeg;base64,')
+
+                photo_data_3 = str(answer_response_text['d']['data'][0]['F14'])
+                phtoto_data_3 = photo_data_3.strip('data:image/jpeg;base64,')
+
                 values.update({
                     'tree_survey_id': answer_response_text['d']['data'][0]['_id'],  # Survey ID
                     'scanned_farmer_id': answer_response_text['d']['data'][0]['F4'],
                     'gps_location': answer_response_text['d']['data'][0]['F11'],
-                    'tree_image_1': answer_response_text['d']['data'][0]['F12'],
-                    'tree_image_2': answer_response_text['d']['data'][0]['F13'],
-                    'tree_image_3': answer_response_text['d']['data'][0]['F14'],
+                    'tree_image_1': '/' + phtoto_data_1,
+                    'tree_image_2': '/' + phtoto_data_2,
+                    'tree_image_3': '/' + phtoto_data_3,
                     'survey_date': answer_response_text['d']['data'][0]['_UD'],
                 })
                 self.update(values)
             else:
                 raise ValidationError(_("There's something wrong! Please check your request again."))
-
