@@ -75,36 +75,40 @@ class cook_stove_survey(models.Model):
                 answer_response_text = json.loads(answer_response.text)
                 values = {}
 
-                values.update({
-                    'cook_stove_survey_id': answer_response_text['d']['data'][0]['_id'],
-                    'farmer_id': answer_response_text['d']['data'][0]['F2'],
-                    't_a': answer_response_text['d']['data'][0]['F3'],
-                    'name_of_chief': answer_response_text['d']['data'][0]['F4'],
-                    'name_of_village': answer_response_text['d']['data'][0]['F5'],
-                    'type_of_kitchen': answer_response_text['d']['data'][0]['F6'],
-                    'cooking_method': answer_response_text['d']['data'][0]['F7'],
-                    'have_an_axe': answer_response_text['d']['data'][0]['F8'],
-                    'per_week_walking_for_firewood': answer_response_text['d']['data'][0]['F9'],
-                    'stove_id': answer_response_text['d']['data'][0]['F10'],
-                    'kitchen_gps_location': answer_response_text['d']['data'][0]['F11'],
-                })
+                survey_id = str(answer_response_text['d']['data'][0]['_id'])
+                survey = self.env['farmer.survey'].search([('farmer_survey_id', '=', survey_id)])
+                if not survey:
 
-                # F12 Value (Is this the only stove that you use?)
+                    values.update({
+                        'cook_stove_survey_id': answer_response_text['d']['data'][0]['_id'],
+                        'farmer_id': answer_response_text['d']['data'][0]['F2'],
+                        't_a': answer_response_text['d']['data'][0]['F3'],
+                        'name_of_chief': answer_response_text['d']['data'][0]['F4'],
+                        'name_of_village': answer_response_text['d']['data'][0]['F5'],
+                        'type_of_kitchen': answer_response_text['d']['data'][0]['F6'],
+                        'cooking_method': answer_response_text['d']['data'][0]['F7'],
+                        'have_an_axe': answer_response_text['d']['data'][0]['F8'],
+                        'per_week_walking_for_firewood': answer_response_text['d']['data'][0]['F9'],
+                        'stove_id': answer_response_text['d']['data'][0]['F10'],
+                        'kitchen_gps_location': answer_response_text['d']['data'][0]['F11'],
+                    })
 
-                if answer_response_text['d']['data'][0]['F12'] == 'Yes':
-                    values.update({'same_stove_used': 'Yes'})
-                else:
-                    values.update({'same_stove_used': 'No'})
+                    # F12 Value (Is this the only stove that you use?)
 
-                # F13 Value (Is the stove in good condition?)
+                    if answer_response_text['d']['data'][0]['F12'] == 'Yes':
+                        values.update({'same_stove_used': 'Yes'})
+                    else:
+                        values.update({'same_stove_used': 'No'})
 
-                if answer_response_text['d']['data'][0]['F13'] == 'Average':
-                    values.update({'stove_condition': 'avg'})
-                elif answer_response_text['d']['data'][0]['F13'] == 'Yes':
-                    values.update({'stove_condition': 'Yes'})
-                else:
-                    values.update({'stove_condition': 'No'})
+                    # F13 Value (Is the stove in good condition?)
 
-                self.update(values)
+                    if answer_response_text['d']['data'][0]['F13'] == 'Average':
+                        values.update({'stove_condition': 'avg'})
+                    elif answer_response_text['d']['data'][0]['F13'] == 'Yes':
+                        values.update({'stove_condition': 'Yes'})
+                    else:
+                        values.update({'stove_condition': 'No'})
+
+                    self.update(values)
             else:
                 raise ValidationError(_("There's something wrong! Please check your request again."))

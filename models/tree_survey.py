@@ -9,12 +9,25 @@ import requests
 import json
 
 
+class inherit_product(models.Model):
+    _inherit = 'product.template'
+
+    ree_survey_id = fields.Char('Survey ID')
+    scanned_farmer_id = fields.Char("Scanned Farmer's 180 ID", required=False)
+    gps_location = fields.Char('Location')
+    tree_type = fields.Char('Tree Type')
+    tree_image_1 = fields.Binary('Image 1', required=False)
+    tree_image_2 = fields.Binary('Image 2', required=False)
+    tree_image_3 = fields.Binary('Image 3')
+    survey_date = fields.Char('Survey Date')
+
+
 class tree_survey(models.Model):
     _name = 'tree.survey'
     _rec_name = 'tree_survey_id'
 
     tree_survey_id = fields.Char('Survey ID')
-    scanned_farmer_id = fields.Char("Scanned Farmer's ID", required=False)
+    scanned_farmer_id = fields.Char("Scanned Farmer's 180 ID", required=False)
     gps_location = fields.Char('Location')
     tree_type = fields.Char('Tree Type')
     tree_image_1 = fields.Binary('Image 1', required=False)
@@ -64,24 +77,27 @@ class tree_survey(models.Model):
                 answer_response_text = json.loads(answer_response.text)
                 values = {}
 
-                photo_data_1 = str(answer_response_text['d']['data'][0]['F12'])
-                phtoto_data_1 = photo_data_1.strip('data:image/jpeg;base64,')
+                survey_id = str(answer_response_text['d']['data'][0]['_id'])
+                survey = self.env['farmer.survey'].search([('farmer_survey_id', '=', survey_id)])
+                if not survey:
+                    photo_data_1 = str(answer_response_text['d']['data'][0]['F12'])
+                    phtoto_data_1 = photo_data_1.strip('data:image/jpeg;base64,')
 
-                photo_data_2 = str(answer_response_text['d']['data'][0]['F13'])
-                phtoto_data_2 = photo_data_2.strip('data:image/jpeg;base64,')
+                    photo_data_2 = str(answer_response_text['d']['data'][0]['F13'])
+                    phtoto_data_2 = photo_data_2.strip('data:image/jpeg;base64,')
 
-                photo_data_3 = str(answer_response_text['d']['data'][0]['F14'])
-                phtoto_data_3 = photo_data_3.strip('data:image/jpeg;base64,')
+                    photo_data_3 = str(answer_response_text['d']['data'][0]['F14'])
+                    phtoto_data_3 = photo_data_3.strip('data:image/jpeg;base64,')
 
-                values.update({
-                    'tree_survey_id': answer_response_text['d']['data'][0]['_id'],  # Survey ID
-                    'scanned_farmer_id': answer_response_text['d']['data'][0]['F4'],
-                    'gps_location': answer_response_text['d']['data'][0]['F11'],
-                    'tree_image_1': '/' + phtoto_data_1,
-                    'tree_image_2': '/' + phtoto_data_2,
-                    'tree_image_3': '/' + phtoto_data_3,
-                    'survey_date': answer_response_text['d']['data'][0]['_UD'],
-                })
-                self.update(values)
+                    values.update({
+                        'tree_survey_id': answer_response_text['d']['data'][0]['_id'],  # Survey ID
+                        'scanned_farmer_id': answer_response_text['d']['data'][0]['F4'],
+                        'gps_location': answer_response_text['d']['data'][0]['F11'],
+                        'tree_image_1': '/' + phtoto_data_1,
+                        'tree_image_2': '/' + phtoto_data_2,
+                        'tree_image_3': '/' + phtoto_data_3,
+                        'survey_date': answer_response_text['d']['data'][0]['_UD'],
+                    })
+                    self.update(values)
             else:
                 raise ValidationError(_("There's something wrong! Please check your request again."))

@@ -33,7 +33,7 @@
                 </header>
                 <sheet>
                     <group>
-                        <group>
+                        <group name="Farmer's Info">
                             <field name="farmer_survey_id"/>
                             <field name="epa"/>
                             <field name="village"/>
@@ -52,7 +52,7 @@
                                 </tree>
                             </field>
                         </group>
-                        <group>
+                        <group name="Farming Details">
                             <field name="farmer_national_id"/>
                             <field name="farmer_id"/>
                             <field name="farmer_farming_list"/>
@@ -65,7 +65,7 @@
                             <field name="special_info_farmer"/>
                         </group>
                     </group>
-                    <group>
+                    <group name="Images">
                         <field name="farmer_photo_1" widget="image"/>
                         <field name="farmer_photo_2" widget="image"/>
                         <field name="farmer_photo_3" widget="image"/>

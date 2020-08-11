@@ -78,20 +78,23 @@ class water_well_survey(models.Model):
                 well_data_3 = answer_response_text['d']['data'][0]['F10']
                 img_3 = well_data_3.strip('data:image/jpeg;base64,')
 
-                values.update({
-                    'water_well_survey_id': answer_response_text['d']['data'][0]['_id'],
-                    'district': answer_response_text['d']['data'][0]['F1'],
-                    'TA': answer_response_text['d']['data'][0]['F2'],
-                    'village_name': answer_response_text['d']['data'][0]['F3'],
-                    'first_last_name_chief': answer_response_text['d']['data'][0]['F4'],
-                    'date': answer_response_text['d']['data'][0]['F5'],
-                    'well_gps_location': answer_response_text['d']['data'][0]['F6'],
-                    'id_number_well': answer_response_text['d']['data'][0]['F7'],
-                    'well_image_1': '/' + img_1,
-                    'well_image_2': '/' + img_2,
-                    'well_image_3': '/' + img_3
-                })
+                survey_id = str(answer_response_text['d']['data'][0]['_id'])
+                survey = self.env['farmer.survey'].search([('farmer_survey_id', '=', survey_id)])
+                if not survey:
+                    values.update({
+                        'water_well_survey_id': answer_response_text['d']['data'][0]['_id'],
+                        'district': answer_response_text['d']['data'][0]['F1'],
+                        'TA': answer_response_text['d']['data'][0]['F2'],
+                        'village_name': answer_response_text['d']['data'][0]['F3'],
+                        'first_last_name_chief': answer_response_text['d']['data'][0]['F4'],
+                        'date': answer_response_text['d']['data'][0]['F5'],
+                        'well_gps_location': answer_response_text['d']['data'][0]['F6'],
+                        'id_number_well': answer_response_text['d']['data'][0]['F7'],
+                        'well_image_1': '/' + img_1,
+                        'well_image_2': '/' + img_2,
+                        'well_image_3': '/' + img_3
+                    })
 
-                self.update(values)
+                    self.update(values)
             else:
                 raise ValidationError(_("There's something wrong! Please check your request again."))
