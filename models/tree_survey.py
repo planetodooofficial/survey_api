@@ -12,8 +12,8 @@ import json
 class inherit_product(models.Model):
     _inherit = 'product.template'
 
-    ree_survey_id = fields.Char('Survey ID')
-    scanned_farmer_id = fields.Char("Scanned Farmer's 180 ID", required=False)
+    tree_survey_id = fields.Char('Survey ID')
+    scanned_farmer_id = fields.Char("Farmer's 180 ID", required=False)
     gps_location = fields.Char('Location')
     tree_type = fields.Char('Tree Type')
     tree_image_1 = fields.Binary('Image 1', required=False)

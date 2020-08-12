@@ -1,0 +1,90 @@
+<odoo>
+
+    <!-- District   -->
+
+    <record id="district_details_action_id" model="ir.actions.act_window">
+        <field name="name">District</field>
+        <field name="res_model">res.district</field>
+        <field name="view_mode">tree,form</field>
+        <field name="help" type="html">
+            <p class="oe_view_nocontent_create">District</p>
+        </field>
+    </record>
+
+    <record id="district_tree_view_id" model="ir.ui.view">
+        <field name="name">District Tree View</field>
+        <field name="model">res.district</field>
+        <field name="arch" type="xml">
+            <tree string="District">
+                <field name="district_name"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="district_form_view_id" model="ir.ui.view">
+        <field name="name">District Form View</field>
+        <field name="model">res.district</field>
+        <field name="arch" type="xml">
+            <form string="District">
+                <sheet>
+                    <group>
+                        <group name="District">
+                            <field name="district_name"/>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <menuitem id="district_details_id"
+              parent="survey_details_id"
+              name="District"
+              groups="base.group_user"
+              action="district_details_action_id"/>
+
+    <!-- Village   -->
+
+    <record id="village_details_action_id" model="ir.actions.act_window">
+        <field name="name">Viilage</field>
+        <field name="res_model">res.district.village</field>
+        <field name="view_mode">tree,form</field>
+        <field name="help" type="html">
+            <p class="oe_view_nocontent_create">Viilage</p>
+        </field>
+    </record>
+
+    <record id="village_tree_view_id" model="ir.ui.view">
+        <field name="name">Village Tree View</field>
+        <field name="model">res.district.village</field>
+        <field name="arch" type="xml">
+            <tree string="Village">
+                <field name="district_name"/>
+                <field name="village_name"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="village_form_view_id" model="ir.ui.view">
+        <field name="name">Village Form View</field>
+        <field name="model">res.district.village</field>
+        <field name="arch" type="xml">
+            <form string="Village">
+                <sheet>
+                    <group>
+                        <group name="Village">
+                            <field name="district_name"/>
+                            <field name="village_name"/>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <menuitem id="village_details_id"
+              parent="survey_details_id"
+              name="Village"
+              groups="base.group_user"
+              action="village_details_action_id"/>
+</odoo>

@@ -6,7 +6,7 @@
     'Author': 'Planet Odoo',
     'Company': 'Planet Odoo',
     'Website': 'http://www.planet-odoo.com/',
-    'depends': ['base'],
+    'depends': ['base', 'product', 'contacts'],
 
     'data': [
         'security/ir.model.access.csv',
@@ -14,6 +14,7 @@
         'views/tree_survey_view.xml',
         'views/cook_stove_survey.xml',
         'views/water_well_survey.xml',
+        'views/district_village_view.xml',
     ],
     'installable': True,
     'auto_install': False,

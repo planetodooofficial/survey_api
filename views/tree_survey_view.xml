@@ -40,12 +40,12 @@
                         </group>
                         <group>
                             <field name="gps_location"/>
+                            <field name="survey_date"/>
                         </group>
                         <group>
                             <field name="tree_image_1" widget="image"/>
                             <field name="tree_image_2" widget="image"/>
                             <field name="tree_image_3" widget="image"/>
-                            <field name="survey_date"/>
                         </group>
                     </group>
                 </sheet>
@@ -58,5 +58,33 @@
               name="Trees Survey"
               groups="base.group_user"
               action="tree_survey_details_action_id"/>
+
+    <record id="products_templates_inherit" model="ir.ui.view">
+        <field name="name">product.template.inherit</field>
+        <field name="model">product.template</field>
+        <field name="inherit_id" ref="product.product_template_only_form_view"/>
+        <field name="arch" type="xml">
+            <xpath expr="//page[@name='inventory']" position="after">
+                <page string="Tree's Info" name="tree_info">
+                   <group>
+                        <group>
+                            <field name="tree_survey_id"/>
+                            <field name="scanned_farmer_id"/>
+                            <field name="tree_type"/>
+                        </group>
+                        <group>
+                            <field name="gps_location"/>
+                            <field name="survey_date"/>
+                        </group>
+                        <group>
+                            <field name="tree_image_1" widget="image"/>
+                            <field name="tree_image_2" widget="image"/>
+                            <field name="tree_image_3" widget="image"/>
+                        </group>
+                    </group>
+                </page>
+            </xpath>
+        </field>
+    </record>
 
 </odoo>

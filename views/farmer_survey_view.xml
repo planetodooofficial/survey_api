@@ -87,4 +87,65 @@
               groups="base.group_user"
               action="farmer_survey_details_action_id"/>
 
+    <record id="partner_inherit" model="ir.ui.view">
+        <field name="name">partner.inherit</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base.view_partner_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='type']" position="before">
+                <field name="farmer_type" widget="checkbox" attrs="{'invisible':[('is_company', '=', True)]}"/>
+            </xpath>
+             <xpath expr="//field[@name='parent_id']" position="after">
+                <field name="farmer_id" placeholder="Farmer's 180 ID" attrs="{'invisible':[('is_company', '=', True)]}"/>
+            </xpath>
+            <xpath expr="//field[@name='street2']" position="after">
+                <field name="district" placeholder="District" attrs="{'invisible':[('is_company', '=', True)]}"/>
+            </xpath>
+            <xpath expr="//field[@name='district']" position="after">
+                <field name="village" placeholder="Village" domain="[('district_name', '=', district)]"
+                       attrs="{'invisible':[('is_company', '=', True)]}"/>
+            </xpath>
+            <xpath expr="//page[@name='internal_notes']" position="after">
+                <page string="Farmer's Info" name="farmer_info">
+                    <group>
+                        <group name="Farmer's Info">
+                            <field name="farmer_survey_id"/>
+                            <field name="epa"/>
+                            <field name="farmer_age"/>
+                            <field name="is_married"/>
+                            <field name="farmer_wife_name"/>
+                            <field name="farmer_wife_age"/>
+                            <field name="farmer_children"/>
+                            <field name="no_of_kids_ids">
+                                <tree string="No. Of Children" widget="one2many">
+                                    <field name="farmer_kid_name"/>
+                                    <field name="farmer_kid_age"/>
+                                    <field name="farmer_kid_gender"/>
+                                </tree>
+                            </field>
+                        </group>
+                        <group name="Farming Details">
+                            <field name="farmer_national_id"/>
+                            <field name="farmer_farming_list"/>
+                            <field name="farmer_fruit_trees"/>
+                            <field name="no_of_tres_for_planting"/>
+                            <field name="efficient_cook_stove"/>
+                            <field name="get_firewood_from"/>
+                            <field name="hours_taken_per_week"/>
+                            <field name="comments"/>
+                            <field name="special_info_farmer"/>
+                        </group>
+                    </group>
+                    <group name="Images">
+                        <field name="farmer_photo_1" widget="image"/>
+                        <field name="farmer_photo_2" widget="image"/>
+                        <field name="farmer_photo_3" widget="image"/>
+                        <field name="farmer_photo_4" widget="image"/>
+                        <field name="farmer_photo_5" widget="image"/>
+                    </group>
+                </page>
+            </xpath>
+        </field>
+    </record>
+
 </odoo>

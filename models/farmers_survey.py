@@ -10,38 +10,38 @@ import requests
 import json
 
 
-# class partner_inherit(models.Model):
-#     _inherit = 'res.partner'
+class partner_inherit(models.Model):
+    _inherit = 'res.partner'
 
-    # company_type = fields.Selection(selection_add=[('farmer', 'Farmer')])
-    # farmer_survey_id = fields.Char('Survey ID')
-    # district = fields.Char('District')
-    # epa = fields.Char('EPA')
-    # village = fields.Char('Village', required=False)
-    # farmer_name = fields.Char("Farmer's Name (First Name and Surname)", required=False)
-    # farmer_id = fields.Char("Farmer's 180 ID")
-    # farmer_photo_1 = fields.Binary("Farmer's Photo 1 (Whole body in front of hut)", required=False)
-    # farmer_photo_2 = fields.Binary("Farmer's Photo 2 (Whole body in front of hut)", required=False)
-    # farmer_photo_3 = fields.Binary("Farmer's Photo 3 (Whole body ideally next to trees)")
-    # farmer_photo_4 = fields.Binary("Farmer's Photo 4 (With whole family)")
-    # farmer_photo_5 = fields.Binary("Farmer's Photo 5 (Clear image of multiple trees of the farmer with whole family)")
-    # farmer_national_id = fields.Char("Farmer's National ID")
-    # farmer_age = fields.Integer("Farmer's Age")
-    # is_married = fields.Selection([('Yes', 'Yes'), ('No', 'No')], string='Married')
-    # farmer_wife_name = fields.Char("Wife's Name")
-    # farmer_wife_age = fields.Integer("Wife's Age")
-    # farmer_children = fields.Integer("No. Of Children")
-    # no_of_kids_ids = fields.One2many('farmer.kids.details', 'farmer_kids_details_id', string="No. Of Kids")
-    # farmer_farming_list = fields.Char('What is the farmer farming on his fields? ')
-    # farmer_fruit_trees = fields.Selection([('Yes', 'Yes'), ('No', 'No')], string='Does the farmer grow fruit trees?')
-    # farmer_grow_fruit_trees = fields.Char(string='What fruit does the farmer grow?')
-    # no_of_tres_for_planting = fields.Integer('How many trees would the farmer like to plant?')
-    # efficient_cook_stove = fields.Selection([('Yes', 'Yes'), ('No', 'No')],
-    #                                         string='Does he have an energy efficient cook-stove??')
-    # get_firewood_from = fields.Char("Where does the farmer get firewood now? ")
-    # hours_taken_per_week = fields.Float('How many hours does this take per week?')
-    # comments = fields.Text('Comments')
-    # special_info_farmer = fields.Text('Special information about farmer')
+    farmer_type = fields.Boolean("Is Farmer")
+    farmer_survey_id = fields.Char('Survey ID')
+    district = fields.Many2one('res.district', 'District')
+    epa = fields.Char('EPA')
+    village = fields.Many2one('res.district.village', 'Village', required=False)
+    farmer_name = fields.Char("Farmer's Name (First Name and Surname)", required=False)
+    farmer_id = fields.Char("Farmer's 180 ID")
+    farmer_photo_1 = fields.Binary("Farmer's Photo 1 (Whole body in front of hut)", required=False)
+    farmer_photo_2 = fields.Binary("Farmer's Photo 2 (Whole body in front of hut)", required=False)
+    farmer_photo_3 = fields.Binary("Farmer's Photo 3 (Whole body ideally next to trees)")
+    farmer_photo_4 = fields.Binary("Farmer's Photo 4 (With whole family)")
+    farmer_photo_5 = fields.Binary("Farmer's Photo 5 (Clear image of multiple trees of the farmer with whole family)")
+    farmer_national_id = fields.Char("Farmer's National ID")
+    farmer_age = fields.Integer("Farmer's Age")
+    is_married = fields.Selection([('Yes', 'Yes'), ('No', 'No')], string='Married')
+    farmer_wife_name = fields.Char("Wife's Name")
+    farmer_wife_age = fields.Integer("Wife's Age")
+    farmer_children = fields.Integer("No. Of Children")
+    no_of_kids_ids = fields.One2many('farmer.kids.details', 'farmer_kids_details_id', string="No. Of Kids")
+    farmer_farming_list = fields.Char('What is the farmer farming on his fields? ')
+    farmer_fruit_trees = fields.Selection([('Yes', 'Yes'), ('No', 'No')], string='Does the farmer grow fruit trees?')
+    farmer_grow_fruit_trees = fields.Char(string='What fruit does the farmer grow?')
+    no_of_tres_for_planting = fields.Integer('How many trees would the farmer like to plant?')
+    efficient_cook_stove = fields.Selection([('Yes', 'Yes'), ('No', 'No')],
+                                            string='Does he have an energy efficient cook-stove??')
+    get_firewood_from = fields.Char("Where does the farmer get firewood now? ")
+    hours_taken_per_week = fields.Float('How many hours does this take per week?')
+    comments = fields.Text('Comments')
+    special_info_farmer = fields.Text('Special information about farmer')
 
 
 class farmer_survey(models.Model):
@@ -49,9 +49,9 @@ class farmer_survey(models.Model):
     _rec_name = 'farmer_survey_id'
 
     farmer_survey_id = fields.Char('Survey ID')
-    district = fields.Char('District')
+    district = fields.Many2one('res.district', 'District')
     epa = fields.Char('EPA')
-    village = fields.Char('Village', required=False)
+    village = fields.Many2one('Village', required=False)
     farmer_name = fields.Char("Farmer's Name (First Name and Surname)", required=False)
     farmer_id = fields.Char("Farmer's 180 ID")
     farmer_photo_1 = fields.Binary("Farmer's Photo 1 (Whole body in front of hut)", required=False)
@@ -124,6 +124,22 @@ class farmer_survey(models.Model):
                 survey_id = str(answer_response_text['d']['data'][0]['_id'])
                 survey = self.env['farmer.survey'].search([('farmer_survey_id', '=', survey_id)])
                 if not survey:
+
+                    # F1 Value
+                    district_values = {
+                        'district_name': answer_response_text['d']['data'][0]['F1']
+                    }
+
+                    district = self.env['res.district'].create(district_values)
+
+                    # F3 Value
+                    village_values = {
+                        'district_name': district.id,
+                        'village_name': answer_response_text['d']['data'][0]['F3']
+                    }
+
+                    village = self.env['res.district.village'].create(village_values)
+
                     p_data_1 = str(answer_response_text['d']['data'][0]['F6'])
                     photo_data_1 = p_data_1.strip('data:image/jpeg;base64,')
 
@@ -145,9 +161,9 @@ class farmer_survey(models.Model):
 
                     values.update({
                         'farmer_survey_id': answer_response_text['d']['data'][0]['_id'],  # Survey ID
-                        'district': answer_response_text['d']['data'][0]['F1'],
+                        'district': district.id,
                         'epa': answer_response_text['d']['data'][0]['F2'],
-                        'village': answer_response_text['d']['data'][0]['F3'],
+                        'village': village.id,
                         'farmer_name': answer_response_text['d']['data'][0]['F4'],
                         'farmer_id': answer_response_text['d']['data'][0]['F5'],
                         'farmer_photo_1': '/' + photo_data_1,  # F6
@@ -204,6 +220,18 @@ class farmer_survey(models.Model):
 
                     self.update(values)
 
+                    country = self.env['res.country'].search([('id', '=', 155)])
+                    values.update({
+                        'company_type': 'person',
+                        'farmer_type': True,
+                        'type': '',
+                        'name': answer_response_text['d']['data'][0]['F4'],
+                        'country_id': country.id
+                    })
+
+                    farmer = self.env['res.partner'].search([('farmer_survey_id', '=', 'farmer_survey_id')], limit=1)
+                    if not farmer:
+                        farmer.create(values)
             else:
                 raise ValidationError(_("There's something wrong! Please check your request again."))
 
