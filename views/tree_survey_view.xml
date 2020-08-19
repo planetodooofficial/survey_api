@@ -35,7 +35,7 @@
                     <group>
                         <group>
                             <field name="tree_survey_id"/>
-                            <field name="scanned_farmer_id"/>
+                            <field name="farmer_id"/>
                             <field name="tree_type"/>
                         </group>
                         <group>
