@@ -17,8 +17,9 @@
         <field name="arch" type="xml">
             <tree string="Trees Survey">
                 <field name="tree_survey_id"/>
+                <field name="tree_name"/>
                 <field name="tree_type"/>
-                <field name="farmer_id"/>
+                <field name="country_id"/>
             </tree>
         </field>
     </record>
@@ -35,7 +36,9 @@
                     <group>
                         <group>
                             <field name="tree_survey_id"/>
+                            <field name="tree_name"/>
                             <field name="farmer_id"/>
+                            <field name="country_id"/>
                             <field name="tree_type"/>
                         </group>
                         <group>
@@ -72,7 +75,9 @@
                     <group>
                         <group>
                             <field name="tree_survey_id"/>
+                            <field name="tree_name"/>
                             <field name="farmer_id"/>
+                            <field name="country_id"/>
                             <field name="tree_type"/>
                         </group>
                         <group>

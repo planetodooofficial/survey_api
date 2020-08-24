@@ -18,7 +18,7 @@
             <tree string="Farmer's Survey">
                 <field name="farmer_survey_id"/>
                 <field name="farmer_name"/>
-                <field name="village"/>
+                <field name="country_id"/>
             </tree>
         </field>
     </record>
@@ -36,8 +36,9 @@
                         <group name="Farmer's Info">
                             <field name="farmer_survey_id"/>
                             <field name="epa"/>
-                            <field name="village"/>
+                            <field name="country_id"/>
                             <field name="district"/>
+                            <field name="village"/>
                             <field name="farmer_name"/>
                             <field name="farmer_age"/>
                             <field name="is_married"/>

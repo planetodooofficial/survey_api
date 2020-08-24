@@ -6,7 +6,7 @@
     'Author': 'Planet Odoo',
     'Company': 'Planet Odoo',
     'Website': 'http://www.planet-odoo.com/',
-    'depends': ['base', 'product', 'contacts'],
+    'depends': ['base', 'product', 'contacts', 'stock'],
 
     'data': [
         'security/ir.model.access.csv',
