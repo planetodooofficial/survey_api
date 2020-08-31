@@ -65,7 +65,7 @@ class inherit_product(models.Model):
             if answer_response.status_code == 200:
                 answer_response_text = json.loads(answer_response.text)
                 values = {}
-                category_id = ''
+                categ = ''
 
                 for answer_response_text in answer_response_text['d']['data']:
                     survey_id = str(answer_response_text['_id'])
@@ -195,11 +195,11 @@ class tree_survey(models.Model):
             if answer_response.status_code == 200:
                 answer_response_text = json.loads(answer_response.text)
                 values = {}
-                category_id = ''
+                categ = ''
 
                 for answer_response_text in answer_response_text['d']['data']:
                     survey_id = str(answer_response_text['_id'])
-                    survey = self.env['product.template'].search([('tree_survey_id', '=', survey_id)])
+                    survey = self.env['tree.survey'].search([('tree_survey_id', '=', survey_id)])
                     if not survey_id == '5f1296be5d082f5b6e04f65f':
                         if not survey:
                             photo_data_1 = str(answer_response_text['F12'])
@@ -220,6 +220,8 @@ class tree_survey(models.Model):
                                 'tree_image_3': '/' + phtoto_data_3,
                                 'survey_date': answer_response_text['_UD'],
                             })
+
+                            survey.create(values)
 
                             farmer = self.env['res.partner'].search(
                                 [('farmer_id', '=', str(answer_response_text['F4']))])
