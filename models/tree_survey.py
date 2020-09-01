@@ -81,9 +81,18 @@ class inherit_product(models.Model):
                             photo_data_3 = str(answer_response_text['F14'])
                             phtoto_data_3 = photo_data_3.strip('data:image/jpeg;base64,')
 
+                            farmer = self.env['res.partner'].search(
+                                [('farmer_id', '=', str(answer_response_text['F4']))])
+                            if not farmer:
+                                farmer.get_farmer_survey_details()
+                                farmer = self.env['res.partner'].search(
+                                    [('farmer_id', '=', str(answer_response_text['F4']))])
+
                             values.update({
                                 'tree_name': answer_response_text['TreeId'],
                                 'tree_survey_id': answer_response_text['_id'],  # Survey ID
+                                'farmer_id': answer_response_text['F4'],
+                                'country_id': farmer.country_id.id,
                                 'gps_location': answer_response_text['F11'],
                                 'tree_image_1': '/' + phtoto_data_1,
                                 'tree_image_2': '/' + phtoto_data_2,
@@ -91,12 +100,7 @@ class inherit_product(models.Model):
                                 'survey_date': answer_response_text['_UD'],
                             })
 
-                            farmer = self.env['res.partner'].search(
-                                [('farmer_id', '=', str(answer_response_text['F4']))])
-                            if not farmer:
-                                farmer.get_farmer_survey_details()
-                                farmer = self.env['res.partner'].search(
-                                    [('farmer_id', '=', str(answer_response_text['F4']))])
+                            survey.create(values)
 
                             tree = self.env['product.template'].search(
                                 [('tree_survey_id', '=', answer_response_text['_id'])], limit=1)
@@ -211,9 +215,18 @@ class tree_survey(models.Model):
                             photo_data_3 = str(answer_response_text['F14'])
                             phtoto_data_3 = photo_data_3.strip('data:image/jpeg;base64,')
 
+                            farmer = self.env['res.partner'].search(
+                                [('farmer_id', '=', str(answer_response_text['F4']))])
+                            if not farmer:
+                                farmer.get_farmer_survey_details()
+                                farmer = self.env['res.partner'].search(
+                                    [('farmer_id', '=', str(answer_response_text['F4']))])
+
                             values.update({
                                 'tree_name': answer_response_text['TreeId'],
                                 'tree_survey_id': answer_response_text['_id'],  # Survey ID
+                                'farmer_id': answer_response_text['F4'],
+                                'country_id': farmer.country_id.id,
                                 'gps_location': answer_response_text['F11'],
                                 'tree_image_1': '/' + phtoto_data_1,
                                 'tree_image_2': '/' + phtoto_data_2,
@@ -221,14 +234,7 @@ class tree_survey(models.Model):
                                 'survey_date': answer_response_text['_UD'],
                             })
 
-                            survey.create(values)
-
-                            farmer = self.env['res.partner'].search(
-                                [('farmer_id', '=', str(answer_response_text['F4']))])
-                            if not farmer:
-                                farmer.get_farmer_survey_details()
-                                farmer = self.env['res.partner'].search(
-                                    [('farmer_id', '=', str(answer_response_text['F4']))])
+                            self.env['tree.survey'].create(values)
 
                             tree = self.env['product.template'].search(
                                 [('tree_survey_id', '=', answer_response_text['_id'])], limit=1)
