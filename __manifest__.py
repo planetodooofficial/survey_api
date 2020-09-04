@@ -15,6 +15,7 @@
         'views/cook_stove_survey.xml',
         'views/water_well_survey.xml',
         'views/district_village_view.xml',
+        'views/custom_css.xml'
     ],
     'installable': True,
     'auto_install': False,
