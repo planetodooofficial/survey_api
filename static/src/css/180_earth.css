@@ -188,7 +188,7 @@
 
 body {
     margin: 0;
-    font-family: "Roboto", "Odoo Unicode Support Noto", sans-serif;
+    font-family: "walrus";
     font-size: 0.875rem;
     font-weight: 400;
     line-height: 1.5;
@@ -204,4 +204,39 @@ body {
 .o_footer {
     background-color: #FFD600 !important;
     color: #212529;
+}
+
+.heading_main {
+    font-size: 3.75rem !important;
+	color: #5B7129 !important;
+	font-family: walrus;
+    text-transform: uppercase;
+	text-transform: uppercase !important;
+	letter-spacing: 7px;
+	text-align: center;
+}
+
+.subheading_main {
+    font-size: 2.25rem;
+	color: #fff;
+	letter-spacing: 5px;
+	font-family: walrus;
+    line-height: 44px;
+	text-align: center;
+}
+
+.head-txt{
+	font-size: 1.75rem;
+	color: #fff;
+
+}
+
+.white_box{
+	width: 114px;
+    height: 31px;
+    background-color: #fff;
+}
+
+.pb35{
+	padding-bottom: 35px !important;
 }
