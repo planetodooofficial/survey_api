@@ -16,6 +16,7 @@
         'views/water_well_survey.xml',
         'views/district_village_view.xml',
         'views/custom_css.xml'
+        'views/custom_web_menu.xml'
     ],
     'installable': True,
     'auto_install': False,
