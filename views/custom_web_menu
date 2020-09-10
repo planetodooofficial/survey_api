@@ -1,0 +1,26 @@
+<odoo>
+    <data>
+        <template id="custom_sign_in_survey" customize_show="True" inherit_id="website.layout" name="Custom Sign In">
+            <xpath expr="//ul[@id='top_menu']" position="replace">
+                <ul class="nav navbar-nav ml-auto text-right" id="top_menu">
+                    <li class="nav-item">
+                        <a class="nav-link" role="menuitem" t-attf-href="/">
+                            <b>Home</b>
+                        </a>
+                    </li>
+                    <li class="nav-item dropdown" t-if="website.user_id != user_id">
+                        <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">
+                            <b>
+                                <span>Appointments</span>
+                            </b>
+                        </a>
+                        <div class="dropdown-menu js_usermenu" role="menu">
+                            <a href="/website/calendar" role="menuitem" class="dropdown-item">Schedule an Appointment</a>
+                            <a class="dropdown-item" role="menuitem" href="/myappointments">My Appointments</a>
+                        </div>
+                    </li>
+                </ul>
+            </xpath>
+        </template>
+    </data>
+</odoo>
