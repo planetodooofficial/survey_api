@@ -1,0 +1,13 @@
+<odoo>
+
+    <record id="products_templates_inherit" model="ir.ui.view">
+        <field name="name">product.templates.inherit</field>
+        <field name="model">product.template</field>
+        <field name="inherit_id" ref="product.product_template_only_form_view"/>
+        <field name="arch" type="xml">
+            <header>
+                <button name="split_into_products" string="Split" class="oe_edit_only" type="action"/>
+            </header>
+        </field>
+    </record>
+</odoo>
