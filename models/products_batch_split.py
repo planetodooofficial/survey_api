@@ -8,14 +8,14 @@ class products_batch_split(models.Model):
     _inherit = 'product.template'
 
     unique_id = fields.Char('Product ID')
-    stages = fields.Selection([('scrap', 'Scrap'), ('nursery', 'Nursery'), ('grown', 'Grown')], string='Stages')
+    stages = fields.Selection([('nursery', 'Nursery'), ('planted', 'Planted'), ('mto', 'MTO')], string='Stages')
 
     @api.model
     def split_into_products(self):
         view = self.env.ref('survey_api.product_batch_split_wizard')
 
         return {
-            'name': _('Product Batch Split.'),
+            'name': _('Tree Batch Split.'),
             'type': 'ir.actions.act_window',
             'view_type': 'form',
             'view_mode': 'form',
@@ -25,3 +25,7 @@ class products_batch_split(models.Model):
             'target': 'new',
             'context': self.env.context,
         }
+
+    @api.model
+    def assign_farmer(self):
+        pass

@@ -6,7 +6,10 @@
         <field name="inherit_id" ref="product.product_template_only_form_view"/>
         <field name="arch" type="xml">
             <header>
-                <button name="split_into_products" string="Split" class="oe_edit_only" type="action"/>
+                <button name="%(survey_api.action_product_split_wizard)d"
+                        string="Split"
+                        class="oe_highlight"
+                        type="action"/>
             </header>
         </field>
     </record>
