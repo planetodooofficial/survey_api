@@ -10,24 +10,28 @@ class product_batch_split_wizard(models.TransientModel):
     product_id = fields.Many2one('product.template', 'Product Name', readonly=True, store=True)
     available_qty = fields.Float('Available Quantity', readonly=True, store=True)
     split_qty = fields.Float('Quantity to Split')
-    location_id = fields.Many2one('stock.location', 'Location', readonly=True, store=True)
+    location_id = fields.Many2one('stock.location', 'Source Location', readonly=True, store=True)
+    dest_location_id = fields.Many2one('stock.location', 'Destination Location')
 
     @api.model
     def default_get(self, fields):
         result = super(product_batch_split_wizard, self).default_get(fields)
+
         product = self.env['product.template'].sudo().browse(self.env.context.get('active_id')).id
         location = self.env['stock.location'].sudo().search([('name', '=', 'Stock')], limit=1).id
         quant = self.env['stock.quant'].sudo().search([('product_id', '=', product), ('location_id', '=', location)])
+
         result.update({
             'product_id': product,
             'available_qty': quant.quantity,
-            'location_id': quant.location_id.id
+            'location_id': quant.location_id.id,
+            'dest_location_id': quant.location_id.id
         })
+
         return result
 
     def split_into_products(self):
         product = self.env['stock.quant'].sudo().search([('product_id', '=', self.product_id.id)], limit=1)
-        location = self.env['stock.location'].sudo().search([('name', '=', 'Stock')], limit=1).id
 
         if product:
             product_id = ''
@@ -48,7 +52,7 @@ class product_batch_split_wizard(models.TransientModel):
 
                     qty_values = {
                         'product_id': product_id.id,
-                        'location_id': location,
+                        'location_id': self.dest_location_id,
                         'inventory_quantity': 1,
                         'quantity': 1,
                         'product_uom_id': product_id.uom_id.id

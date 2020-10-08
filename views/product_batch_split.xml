@@ -7,7 +7,12 @@
         <field name="arch" type="xml">
             <header>
                 <button name="%(survey_api.action_product_split_wizard)d"
-                        string="Split"
+                        string="Split Products"
+                        class="oe_highlight"
+                        type="action"/>
+
+                <button name="%(survey_api.wiz_stock_move_location_action)d"
+                        string="Scrap Products"
                         class="oe_highlight"
                         type="action"/>
             </header>
