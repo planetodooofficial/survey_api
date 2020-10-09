@@ -52,7 +52,7 @@ class product_batch_split_wizard(models.TransientModel):
 
                     qty_values = {
                         'product_id': product_id.id,
-                        'location_id': self.dest_location_id,
+                        'location_id': self.dest_location_id.id,
                         'inventory_quantity': 1,
                         'quantity': 1,
                         'product_uom_id': product_id.uom_id.id
