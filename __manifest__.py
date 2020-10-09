@@ -11,6 +11,8 @@
     'data': [
         'data/stock_quant_view.xml',
         'security/ir.model.access.csv',
+        'wizard/product_batch_split_wizard.xml',
+        'wizard/stock_move_location.xml',
         'views/farmer_survey_view.xml',
         'views/tree_survey_view.xml',
         'views/cook_stove_survey.xml',
@@ -19,8 +21,6 @@
         'views/custom_css.xml',
         'views/stock_picking_type_views.xml',
         'views/product_batch_split.xml',
-        'wizard/product_batch_split_wizard.xml',
-        'wizard/stock_move_location.xml',
     ],
     'installable': True,
     'auto_install': False,
