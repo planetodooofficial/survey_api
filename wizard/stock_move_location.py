@@ -73,6 +73,24 @@ class StockMoveLocationWizard(models.TransientModel):
                 rec.origin_location_disable = True
                 rec.destination_location_disable = True
 
+    # def default_get(self, fields):
+    #     result = super(StockMoveLocationWizard, self).default_get(fields)
+    #     quants = self.env["stock.quant"].browse(self.env.context.get("active_id"))
+    #
+    #     result['stock_move_location_line_ids'] = [(0, 0, {
+    #         "product_id": quants.product_id.id,
+    #         "move_quantity": quants.quantity,
+    #         "max_quantity": quants.quantity,
+    #         "origin_location_id": quants.location_id.id,
+    #         "lot_id": quants.lot_id.id,
+    #         "product_uom_id": quants.product_uom_id.id,
+    #         "custom": False,
+    #     })]
+    #
+    #     result["origin_location_id"] = quants.location_id.id
+    #
+    #     return result
+
     @api.model
     def default_get(self, fields):
         res = super(StockMoveLocationWizard, self).default_get(fields)
@@ -208,28 +226,29 @@ class StockMoveLocationWizard(models.TransientModel):
 
     def _get_stock_move_location_lines_values(self):
         product_obj = self.env["product.template"].browse(self.env.context.get("active_id"))
+        quant_obj = self.env["stock.quant"].browse(self.env.context.get("active_id"))
         product_data = []
-        for group in self._get_group_quants():
-            product = product_obj.browse(group.get("product_id")).exists()
-            # Apply the putaway strategy
-            location_dest_id = (
-                    self.apply_putaway_strategy
-                    and self.destination_location_id._get_putaway_strategy(product).id
-                    or self.destination_location_id.id
-            )
-            product_data.append(
-                {
-                    "product_id": product.id,
-                    "move_quantity": group.get("sum"),
-                    "max_quantity": group.get("sum"),
-                    "origin_location_id": self.origin_location_id.id,
-                    "destination_location_id": location_dest_id,
-                    # cursor returns None instead of False
-                    "lot_id": group.get("lot_id") or False,
-                    "product_uom_id": product.uom_id.id,
-                    "custom": False,
-                }
-            )
+        # for group in self._get_group_quants():
+        #     product = product_obj.browse(group.get("product_id")).exists()
+        #     # Apply the putaway strategy
+        #     location_dest_id = (
+        #             self.apply_putaway_strategy
+        #             and self.destination_location_id._get_putaway_strategy(product).id
+        #             or self.destination_location_id.id
+        #     )
+        product_data.append(
+            {
+                "product_id": product_obj.id,
+                "move_quantity": quant_obj.quantity,
+                "max_quantity": quant_obj.quantity,
+                "origin_location_id": quant_obj.location_id.id,
+                # "destination_location_id": location_dest_id,
+                # cursor returns None instead of False
+                "lot_id": quant_obj.lot_id.id,
+                "product_uom_id": product_obj.uom_id.id,
+                "custom": False,
+            }
+        )
         return product_data
 
     @api.onchange("origin_location_id")
