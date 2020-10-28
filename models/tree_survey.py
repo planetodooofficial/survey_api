@@ -28,7 +28,7 @@ class inherit_product(models.Model):
 
         # Authentication
         access_token = ''
-        url = 'https://www.earth.ff1.co.za/api/v1/User/signin'
+        url = 'https://earth.ff1.co.za/api/v1/User/signin'
         email = 'planetodoo'
         password = 'nG8#dDwes$B*WDP8qku2'
         header = {
@@ -50,7 +50,7 @@ class inherit_product(models.Model):
         # Getting & Storing Survey Answers
 
         if access_token:
-            answer_url = 'https://www.earth.ff1.co.za/api/v1/Survey/5f0efbf60fdfb21193f3f5d9/answer'
+            answer_url = 'https://earth.ff1.co.za/api/v1/Survey/5f0efbf60fdfb21193f3f5d9/answer'
             body_data = {
                 "paging": {"size": 20, "page": 1},
                 "sort": {"_UD": -1},
@@ -162,7 +162,7 @@ class tree_survey(models.Model):
 
         # Authentication
         access_token = ''
-        url = 'https://www.earth.ff1.co.za/api/v1/User/signin'
+        url = 'https://earth.ff1.co.za/api/v1/User/signin'
         email = 'planetodoo'
         password = 'nG8#dDwes$B*WDP8qku2'
         header = {
@@ -184,7 +184,7 @@ class tree_survey(models.Model):
         # Getting & Storing Survey Answers
 
         if access_token:
-            answer_url = 'https://www.earth.ff1.co.za/api/v1/Survey/5f0efbf60fdfb21193f3f5d9/answer'
+            answer_url = 'https://earth.ff1.co.za/api/v1/Survey/5f0efbf60fdfb21193f3f5d9/answer'
             body_data = {
                 "paging": {"size": 20, "page": 1},
                 "sort": {"_UD": -1},

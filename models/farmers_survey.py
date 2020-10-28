@@ -151,7 +151,7 @@ class partner_inherit(models.Model):
                         'no_of_tres_for_planting': int(answer_response_text['d']['data'][0]['F23']),
                         'get_firewood_from': answer_response_text['d']['data'][0]['F25'],
                         'hours_taken_per_week': float(answer_response_text['d']['data'][0]['F26']),
-                        'comments': answer_response_text['d']['data'][0]['F27'],
+                        # 'comments': answer_response_text['d']['data'][0]['F27'],
                     })
 
                     #  F13 Value (Is Married?)
@@ -242,7 +242,7 @@ class farmer_survey(models.Model):
 
         # Authentication
         access_token = ''
-        url = 'https://www.earth.ff1.co.za/api/v1/User/signin'
+        url = 'https://earth.ff1.co.za/api/v1/User/signin'
         email = 'planetodoo'
         password = 'nG8#dDwes$B*WDP8qku2'
         header = {
@@ -266,7 +266,7 @@ class farmer_survey(models.Model):
         phtoto_data_1 = ''
 
         if access_token:
-            answer_url = 'https://www.earth.ff1.co.za/api/v1/Survey/5f0eda300fdfb21193f3f5c4/answer'
+            answer_url = 'https://earth.ff1.co.za/api/v1/Survey/5f0eda300fdfb21193f3f5c4/answer'
             body_data = {
                 "paging": {"size": 20, "page": 1},
                 "sort": {"_UD": -1},
@@ -320,14 +320,14 @@ class farmer_survey(models.Model):
 
                     list_of_trees = answer_response_text['d']['data'][0]['F20']
 
-                    country = self.env['res.country'].search([('code', '=', answer_response_text['d']['data'][0]['F28'])]).id
+                    # country = self.env['res.country'].search([('code', '=', answer_response_text['d']['data'][0]['F28'])]).id
 
                     values.update({
                         'farmer_survey_id': answer_response_text['d']['data'][0]['_id'],  # Survey ID
                         'district': district.id,
                         'epa': answer_response_text['d']['data'][0]['F2'],
                         'village': village.id,
-                        'country_id': country,
+                        # 'country_id': country,
                         'farmer_name': answer_response_text['d']['data'][0]['F4'],
                         'farmer_id': answer_response_text['d']['data'][0]['F5'],
                         'farmer_photo_1': '/' + photo_data_1,  # F6
@@ -346,7 +346,7 @@ class farmer_survey(models.Model):
                         'no_of_tres_for_planting': int(answer_response_text['d']['data'][0]['F23']),
                         'get_firewood_from': answer_response_text['d']['data'][0]['F25'],
                         'hours_taken_per_week': float(answer_response_text['d']['data'][0]['F26']),
-                        'comments': answer_response_text['d']['data'][0]['F27'],
+                        # 'comments': answer_response_text['d']['data'][0]['F27'],
                     })
 
                     #  F13 Value (Is Married?)
@@ -389,7 +389,7 @@ class farmer_survey(models.Model):
                         'farmer_type': True,
                         'type': '',
                         'name': answer_response_text['d']['data'][0]['F4'],
-                        'country_id': country
+                        # 'country_id': country
                     })
 
                     farmer = self.env['res.partner'].search([('farmer_survey_id', '=', 'farmer_survey_id')], limit=1)

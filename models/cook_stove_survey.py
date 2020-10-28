@@ -35,7 +35,7 @@ class cook_stove_survey(models.Model):
 
         # Authentication
         access_token = ''
-        url = 'https://www.earth.ff1.co.za/api/v1/User/signin'
+        url = 'https://earth.ff1.co.za/api/v1/User/signin'
         email = 'planetodoo'
         password = 'nG8#dDwes$B*WDP8qku2'
         header = {
@@ -59,7 +59,7 @@ class cook_stove_survey(models.Model):
         phtoto_data_1 = ''
 
         if access_token:
-            answer_url = 'https://www.earth.ff1.co.za/api/v1/Survey/5f0f021c0fdfb21193f3f5e8/answer'
+            answer_url = 'https://earth.ff1.co.za/api/v1/Survey/5f0f021c0fdfb21193f3f5e8/answer'
             body_data = {
                 "paging": {"size": 20, "page": 1},
                 "sort": {"_UD": -1},
