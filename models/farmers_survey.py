@@ -321,14 +321,14 @@ class farmer_survey(models.Model):
 
                     list_of_trees = answer_response_text['d']['data'][0]['F20']
 
-                    country = self.env['res.country'].search([('code', '=', answer_response_text['d']['data'][0]['F28'])]).id
+                    # country = self.env['res.country'].search([('code', '=', answer_response_text['d']['data'][0]['F28'])]).id
 
                     values.update({
                         'farmer_survey_id': answer_response_text['d']['data'][0]['_id'],  # Survey ID
                         'district': district.id,
                         'epa': answer_response_text['d']['data'][0]['F2'],
                         'village': village.id,
-                        'country_id': country,
+                        # 'country_id': country,
                         'farmer_name': answer_response_text['d']['data'][0]['F4'],
                         'farmer_id': answer_response_text['d']['data'][0]['F5'],
                         'farmer_photo_1': '/' + photo_data_1,  # F6
@@ -393,7 +393,7 @@ class farmer_survey(models.Model):
                         'farmer_type': True,
                         'type': '',
                         'name': answer_response_text['d']['data'][0]['F4'],
-                        'country_id': country
+                        # 'country_id': country
                     })
 
                     farmer = self.env['res.partner'].search([('farmer_survey_id', '=', 'farmer_survey_id')], limit=1)
