@@ -1,0 +1,12 @@
+<odoo>
+
+
+    <record id="scrap_wizard_action" model="ir.actions.act_window">
+        <field name="name">Scrap Products</field>
+        <field name="res_model">stock.scrap</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+
+
+</odoo>

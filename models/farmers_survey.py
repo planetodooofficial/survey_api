@@ -47,7 +47,7 @@ class partner_inherit(models.Model):
 
         # Authentication
         access_token = ''
-        url = 'https://www.earth.ff1.co.za/api/v1/User/signin'
+        url = 'https://earth.ff1.co.za/api/v1/User/signin'
         email = 'planetodoo'
         password = 'nG8#dDwes$B*WDP8qku2'
         header = {
@@ -71,7 +71,7 @@ class partner_inherit(models.Model):
         phtoto_data_1 = ''
 
         if access_token:
-            answer_url = 'https://www.earth.ff1.co.za/api/v1/Survey/5f0eda300fdfb21193f3f5c4/answer'
+            answer_url = 'https://earth.ff1.co.za/api/v1/Survey/5f0eda300fdfb21193f3f5c4/answer'
             body_data = {
                 "paging": {"size": 20, "page": 1},
                 "sort": {"_UD": -1},
@@ -151,18 +151,18 @@ class partner_inherit(models.Model):
                         'no_of_tres_for_planting': int(answer_response_text['d']['data'][0]['F23']),
                         'get_firewood_from': answer_response_text['d']['data'][0]['F25'],
                         'hours_taken_per_week': float(answer_response_text['d']['data'][0]['F26']),
-                        'comments': answer_response_text['d']['data'][0]['F27'],
+                        # 'comments': answer_response_text['d']['data'][0]['F27'],
                     })
 
                     #  F13 Value (Is Married?)
-                    if answer_response_text['d']['data'][0]['F13'] == 'Married':
+                    if answer_response_text['d']['data'][0]['F13'] == True:
                         values.update({'is_married': 'Yes'})
                     else:
                         values.update({'is_married': 'No'})
 
                     # F17 - F19 Values (No. Of Children)
 
-                    if answer_response_text['d']['data'][0]['F13'] == 'Married':
+                    if answer_response_text['d']['data'][0]['F13'] == True:
                         for name in answer_response_text['d']['data'][0]['F17']:
                             for age in answer_response_text['d']['data'][0]['F18']:
                                 for gender in answer_response_text['d']['data'][0]['F19']:
@@ -172,6 +172,7 @@ class partner_inherit(models.Model):
                                         'farmer_kid_age': age,
                                         'farmer_kid_gender': gender,
                                     })]
+                                    children_list.append(children_vals)
                                     values.update({'no_of_kids_ids': children_list})
 
                     # F21 Value (Does the farmer grow fruit trees?)
@@ -242,7 +243,7 @@ class farmer_survey(models.Model):
 
         # Authentication
         access_token = ''
-        url = 'https://www.earth.ff1.co.za/api/v1/User/signin'
+        url = 'https://earth.ff1.co.za/api/v1/User/signin'
         email = 'planetodoo'
         password = 'nG8#dDwes$B*WDP8qku2'
         header = {
@@ -266,7 +267,7 @@ class farmer_survey(models.Model):
         phtoto_data_1 = ''
 
         if access_token:
-            answer_url = 'https://www.earth.ff1.co.za/api/v1/Survey/5f0eda300fdfb21193f3f5c4/answer'
+            answer_url = 'https://earth.ff1.co.za/api/v1/Survey/5f0eda300fdfb21193f3f5c4/answer'
             body_data = {
                 "paging": {"size": 20, "page": 1},
                 "sort": {"_UD": -1},
@@ -346,18 +347,18 @@ class farmer_survey(models.Model):
                         'no_of_tres_for_planting': int(answer_response_text['d']['data'][0]['F23']),
                         'get_firewood_from': answer_response_text['d']['data'][0]['F25'],
                         'hours_taken_per_week': float(answer_response_text['d']['data'][0]['F26']),
-                        'comments': answer_response_text['d']['data'][0]['F27'],
+                        # 'comments': answer_response_text['d']['data'][0]['F27'],
                     })
 
                     #  F13 Value (Is Married?)
-                    if answer_response_text['d']['data'][0]['F13'] == 'Married':
+                    if answer_response_text['d']['data'][0]['F13'] == True:
                         values.update({'is_married': 'Yes'})
                     else:
                         values.update({'is_married': 'No'})
 
                     # F17 - F19 Values (No. Of Children)
 
-                    if answer_response_text['d']['data'][0]['F13'] == 'Married':
+                    if answer_response_text['d']['data'][0]['F13'] == True:
                         for name in answer_response_text['d']['data'][0]['F17']:
                             for age in answer_response_text['d']['data'][0]['F18']:
                                 for gender in answer_response_text['d']['data'][0]['F19']:
@@ -367,6 +368,9 @@ class farmer_survey(models.Model):
                                         'farmer_kid_age': age,
                                         'farmer_kid_gender': gender,
                                     })]
+                                    # print(children_vals)
+                                    children_list.append(children_vals)
+
                                     values.update({'no_of_kids_ids': children_list})
 
                     # F21 Value (Does the farmer grow fruit trees?)

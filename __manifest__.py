@@ -6,13 +6,14 @@
     'Author': 'Planet Odoo',
     'Company': 'Planet Odoo',
     'Website': 'http://www.planet-odoo.com/',
-    'depends': ['base', 'product', 'contacts', 'stock', 'website'],
+    'depends': ['base', 'product', 'contacts', 'stock', 'website','sale'],
 
     'data': [
         'data/stock_quant_view.xml',
         'security/ir.model.access.csv',
         'wizard/product_batch_split_wizard.xml',
         'wizard/stock_move_location.xml',
+        'wizard/stock_scrap_inherit_for_wizard_view.xml',
         'views/farmer_survey_view.xml',
         'views/tree_survey_view.xml',
         'views/cook_stove_survey.xml',

@@ -17,9 +17,14 @@ class product_batch_split_wizard(models.TransientModel):
     def default_get(self, fields):
         result = super(product_batch_split_wizard, self).default_get(fields)
 
+        user_id=self.env.user
+
         product = self.env['product.template'].sudo().browse(self.env.context.get('active_id')).id
-        location = self.env['stock.location'].sudo().search([('name', '=', 'Stock')], limit=1).id
-        quant = self.env['stock.quant'].sudo().search([('product_id', '=', product), ('location_id', '=', location)])
+        product_product_id = self.env['product.product'].search([("product_tmpl_id", "=", product)])
+        # prod_test=self.env['stock.quant'].sudo().search([('product_id', '=', 51), ('location_id', '=', 30)])
+        # print(prod_test)
+        location = self.env['stock.location'].sudo().search([('name', '=', 'Stock'), ('company_id','=',user_id.company_id.id)], limit=1).id
+        quant = self.env['stock.quant'].sudo().search([('product_id', '=', product_product_id.id), ('location_id', '=', location)])
 
         result.update({
             'product_id': product,
@@ -31,7 +36,8 @@ class product_batch_split_wizard(models.TransientModel):
         return result
 
     def split_into_products(self):
-        product = self.env['stock.quant'].sudo().search([('product_id', '=', self.product_id.id)], limit=1)
+        product_product_id = self.env['product.product'].search([("product_tmpl_id", "=", self.product_id.id)])
+        product = self.env['stock.quant'].sudo().search([('product_id', '=',product_product_id.id)], limit=1)
 
         if product:
             product_id = ''
@@ -51,7 +57,7 @@ class product_batch_split_wizard(models.TransientModel):
                     counter += 1
 
                     qty_values = {
-                        'product_id': product_id.id,
+                        'product_id': product_id.product_variant_id.id,
                         'location_id': self.dest_location_id.id,
                         'inventory_quantity': 1,
                         'quantity': 1,
@@ -60,7 +66,7 @@ class product_batch_split_wizard(models.TransientModel):
 
                     quantity = self.env['stock.quant'].sudo().create(qty_values)
 
-                quant = self.env['stock.quant'].sudo().search([('product_id', '=', self.product_id.id)])
+                quant = self.env['stock.quant'].sudo().search([('product_id', '=', product_product_id.id)])
                 if quant:
                     new_qty = product.quantity - self.split_qty
 

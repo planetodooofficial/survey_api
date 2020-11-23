@@ -45,6 +45,10 @@ class StockMoveLocationWizard(models.TransientModel):
         required=True,
         domain=lambda self: self._get_locations_domain(),
     )
+
+    # def _default_stdid(self):
+    #     return self.env['wiz.stock.move.location.line'].browse(self.env.context.get("active_id"))
+
     stock_move_location_line_ids = fields.Many2many(
         string="Move Location lines",
         comodel_name="wiz.stock.move.location.line",
@@ -58,6 +62,8 @@ class StockMoveLocationWizard(models.TransientModel):
         string="Connected Picking", comodel_name="stock.picking"
     )
     edit_locations = fields.Boolean(string="Edit Locations", default=True)
+    check_point = fields.Boolean(string="check_point", default=False)
+
     apply_putaway_strategy = fields.Boolean(string="Apply putaway strategy")
 
     @api.depends("edit_locations")
@@ -91,31 +97,70 @@ class StockMoveLocationWizard(models.TransientModel):
     #
     #     return result
 
+
+
+    # @api.model
+    # def default_get(self, fields):
+    #     res = super(StockMoveLocationWizard, self).default_get(fields)
+    #     # if self.env.context.get("active_model", False) != "stock.quant":
+    #     #     return res
+    #     # Load data directly from quants
+    #     quants = self.env["stock.quant"].browse(
+    #         self.env.context.get("active_ids")
+    #     )
+    #     product = self.env['product.template'].browse(self.env.context.get("active_id"))
+    #
+    #
+    #
+    #
+    #     res["stock_move_location_line_ids"] = [(0, 0,
+    #                                             {
+    #                                                 "product_id": product.id,
+    #                                                 "move_quantity": quant.quantity,
+    #                                                 "max_quantity": quant.quantity,
+    #                                                 "origin_location_id": 8,
+    #                                                 "lot_id": quant.lot_id.id,
+    #                                                 "product_uom_id": quant.product_uom_id.id,
+    #                                                 "custom": False,
+    #                                             },
+    #                                             )
+    #                                            for quant in quants
+    #                                            ]
+    #     res["origin_location_id"] = first(quants).location_id.id
+    #     res["origin_location_id"] = 8
+    #     return res
+    #
+
     @api.model
     def default_get(self, fields):
         res = super(StockMoveLocationWizard, self).default_get(fields)
-        # if self.env.context.get("active_model", False) != "stock.quant":
-        #     return res
-        # Load data directly from quants
-        quants = self.env["stock.quant"].browse(
-            self.env.context.get("active_ids", False)
-        )
-        product = self.env['product.template'].browse(self.env.context.get("active_id"))
 
-        res["stock_move_location_line_ids"] = [(0, 0,
+        user_id = self.env.user
+
+        product = self.env['product.template'].sudo().browse(self.env.context.get('active_id')).id
+        product_product_id = self.env['product.product'].search([("product_tmpl_id", "=", product)])
+
+        location = self.env['stock.location'].sudo().search([('name', '=', 'Stock'), ('company_id','=',user_id.company_id.id)], limit=1).id
+        quant = self.env['stock.quant'].sudo().search([('product_id', '=', product_product_id.id), ('location_id', '=', location)])
+
+        res["origin_location_id"]=location
+
+        stock_line=[]
+        line= [(0, 0,
                                                 {
-                                                    "product_id": product.id,
-                                                    "move_quantity": quant.quantity,
+                                                    "product_id": product,
+                                                    "move_quantity": 1,
                                                     "max_quantity": quant.quantity,
-                                                    "origin_location_id": quant.location_id.id,
+                                                    "origin_location_id": location,
                                                     "lot_id": quant.lot_id.id,
                                                     "product_uom_id": quant.product_uom_id.id,
                                                     "custom": False,
                                                 },
-                                                )
-                                               for quant in quants
-                                               ]
-        res["origin_location_id"] = first(quants).location_id.id
+                                                )]
+
+        stock_line.append(line)
+
+        res.update({'stock_move_location_line_ids':stock_line})
         return res
 
     @api.onchange("origin_location_id")

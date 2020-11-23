@@ -16,6 +16,7 @@
                 <footer>
                     <button name="split_into_products" type="object" string="Split Batch" class="oe_highlight"/>
                     <button special="cancel" string="Cancel"/>
+
                 </footer>
             </form>
         </field>

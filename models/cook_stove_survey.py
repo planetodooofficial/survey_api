@@ -35,7 +35,7 @@ class cook_stove_survey(models.Model):
 
         # Authentication
         access_token = ''
-        url = 'https://www.earth.ff1.co.za/api/v1/User/signin'
+        url = 'https://earth.ff1.co.za/api/v1/User/signin'
         email = 'planetodoo'
         password = 'nG8#dDwes$B*WDP8qku2'
         header = {
@@ -59,7 +59,7 @@ class cook_stove_survey(models.Model):
         phtoto_data_1 = ''
 
         if access_token:
-            answer_url = 'https://www.earth.ff1.co.za/api/v1/Survey/5f0f021c0fdfb21193f3f5e8/answer'
+            answer_url = 'https://earth.ff1.co.za/api/v1/Survey/5f0f021c0fdfb21193f3f5e8/answer'
             body_data = {
                 "paging": {"size": 20, "page": 1},
                 "sort": {"_UD": -1},
@@ -81,30 +81,40 @@ class cook_stove_survey(models.Model):
 
                     values.update({
                         'cook_stove_survey_id': answer_response_text['d']['data'][0]['_id'],
-                        'farmer_id': answer_response_text['d']['data'][0]['F2'],
-                        't_a': answer_response_text['d']['data'][0]['F3'],
-                        'name_of_chief': answer_response_text['d']['data'][0]['F4'],
-                        'name_of_village': answer_response_text['d']['data'][0]['F5'],
-                        'type_of_kitchen': answer_response_text['d']['data'][0]['F6'],
-                        'cooking_method': answer_response_text['d']['data'][0]['F7'],
-                        'have_an_axe': answer_response_text['d']['data'][0]['F8'],
-                        'per_week_walking_for_firewood': answer_response_text['d']['data'][0]['F9'],
-                        'stove_id': answer_response_text['d']['data'][0]['F10'],
-                        'kitchen_gps_location': answer_response_text['d']['data'][0]['F11'],
+                        'farmer_id': answer_response_text['d']['data'][0]['F1'],
+                        't_a': answer_response_text['d']['data'][0]['F2'],
+                        # 'name_of_chief': answer_response_text['d']['data'][0]['F3'],
+                        'name_of_village': answer_response_text['d']['data'][0]['F3'],
+                        'type_of_kitchen': answer_response_text['d']['data'][0]['F4'],
+                        'cooking_method': answer_response_text['d']['data'][0]['F5'],
+                        # 'have_an_axe': answer_response_text['d']['data'][0]['F6'],
+                        'per_week_walking_for_firewood': answer_response_text['d']['data'][0]['F7'],
+                        'stove_id': answer_response_text['d']['data'][0]['F8'],
+                        'kitchen_gps_location': answer_response_text['d']['data'][0]['F9'],
+                        'comments_1': answer_response_text['d']['data'][0]['F12'],
                     })
+
+
+                    # F6 Value (have_an_axe)
+                    if answer_response_text['d']['data'][0]['F6'] == True:
+                        values.update({'have_an_axe': 'Yes'})
+                    else:
+                        values.update({'have_an_axe': 'No'})
+
 
                     # F12 Value (Is this the only stove that you use?)
 
-                    if answer_response_text['d']['data'][0]['F12'] == 'Yes':
+                    if answer_response_text['d']['data'][0]['F10'] == True:
                         values.update({'same_stove_used': 'Yes'})
                     else:
                         values.update({'same_stove_used': 'No'})
 
                     # F13 Value (Is the stove in good condition?)
+                    #question ask about average scenerio
 
-                    if answer_response_text['d']['data'][0]['F13'] == 'Average':
+                    if answer_response_text['d']['data'][0]['F11'] == 'Average':
                         values.update({'stove_condition': 'avg'})
-                    elif answer_response_text['d']['data'][0]['F13'] == 'Yes':
+                    elif answer_response_text['d']['data'][0]['F11'] == 'Yes':
                         values.update({'stove_condition': 'Yes'})
                     else:
                         values.update({'stove_condition': 'No'})

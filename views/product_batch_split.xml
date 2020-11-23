@@ -15,6 +15,11 @@
                         string="Scrap Products"
                         class="oe_highlight"
                         type="action"/>
+                <button name="%(survey_api.scrap_wizard_action)d"
+                        string="Scrap Products Wizard"
+                        class="oe_highlight"
+                        context="{'is_wizard': 'True'}"
+                        type="action"/>
             </header>
         </field>
     </record>

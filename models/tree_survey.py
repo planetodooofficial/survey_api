@@ -28,7 +28,7 @@ class inherit_product(models.Model):
 
         # Authentication
         access_token = ''
-        url = 'https://www.earth.ff1.co.za/api/v1/User/signin'
+        url = 'https://earth.ff1.co.za/api/v1/User/signin'
         email = 'planetodoo'
         password = 'nG8#dDwes$B*WDP8qku2'
         header = {
@@ -50,7 +50,7 @@ class inherit_product(models.Model):
         # Getting & Storing Survey Answers
 
         if access_token:
-            answer_url = 'https://www.earth.ff1.co.za/api/v1/Survey/5f0efbf60fdfb21193f3f5d9/answer'
+            answer_url = 'https://earth.ff1.co.za/api/v1/Survey/5f0efbf60fdfb21193f3f5d9/answer'
             body_data = {
                 "paging": {"size": 20, "page": 1},
                 "sort": {"_UD": -1},
@@ -72,28 +72,28 @@ class inherit_product(models.Model):
                     survey = self.env['product.template'].search([('tree_survey_id', '=', survey_id)])
                     if not survey_id == '5f1296be5d082f5b6e04f65f':
                         if not survey:
-                            photo_data_1 = str(answer_response_text['F12'])
+                            photo_data_1 = str(answer_response_text['F4'])
                             phtoto_data_1 = photo_data_1.strip('data:image/jpeg;base64,')
 
-                            photo_data_2 = str(answer_response_text['F13'])
+                            photo_data_2 = str(answer_response_text['F5'])
                             phtoto_data_2 = photo_data_2.strip('data:image/jpeg;base64,')
 
-                            photo_data_3 = str(answer_response_text['F14'])
+                            photo_data_3 = str(answer_response_text['F6'])
                             phtoto_data_3 = photo_data_3.strip('data:image/jpeg;base64,')
 
                             farmer = self.env['res.partner'].search(
-                                [('farmer_id', '=', str(answer_response_text['F4']))])
+                                [('farmer_id', '=', str(answer_response_text['F1']))])
                             if not farmer:
                                 farmer.get_farmer_survey_details()
                                 farmer = self.env['res.partner'].search(
-                                    [('farmer_id', '=', str(answer_response_text['F4']))])
+                                    [('farmer_id', '=', str(answer_response_text['F1']))])
 
                             values.update({
-                                'tree_name': answer_response_text['TreeId'],
+                                'tree_name': answer_response_text['F8'],
                                 'tree_survey_id': answer_response_text['_id'],  # Survey ID
-                                'farmer_id': answer_response_text['F4'],
+                                'farmer_id': answer_response_text['F1'],
                                 'country_id': farmer.country_id.id,
-                                'gps_location': answer_response_text['F11'],
+                                'gps_location': answer_response_text['F2'],
                                 'tree_image_1': '/' + phtoto_data_1,
                                 'tree_image_2': '/' + phtoto_data_2,
                                 'tree_image_3': '/' + phtoto_data_3,
@@ -119,7 +119,7 @@ class inherit_product(models.Model):
                                 values.update({
                                     'farmer_name': farmer.id,
                                     'farmer_id': farmer.farmer_id,
-                                    'name': answer_response_text['TreeId'],
+                                    # 'name': answer_response_text['F8'],
                                     'type': 'product',
                                     'categ_id': categ.id,
                                     'route_ids': [(6, 0, [route_id.id])]
@@ -162,7 +162,7 @@ class tree_survey(models.Model):
 
         # Authentication
         access_token = ''
-        url = 'https://www.earth.ff1.co.za/api/v1/User/signin'
+        url = 'https://earth.ff1.co.za/api/v1/User/signin'
         email = 'planetodoo'
         password = 'nG8#dDwes$B*WDP8qku2'
         header = {
@@ -184,7 +184,7 @@ class tree_survey(models.Model):
         # Getting & Storing Survey Answers
 
         if access_token:
-            answer_url = 'https://www.earth.ff1.co.za/api/v1/Survey/5f0efbf60fdfb21193f3f5d9/answer'
+            answer_url = 'https://earth.ff1.co.za/api/v1/Survey/5f0efbf60fdfb21193f3f5d9/answer'
             body_data = {
                 "paging": {"size": 20, "page": 1},
                 "sort": {"_UD": -1},
@@ -199,6 +199,7 @@ class tree_survey(models.Model):
             if answer_response.status_code == 200:
                 answer_response_text = json.loads(answer_response.text)
                 values = {}
+                prod_val={}
                 categ = ''
 
                 for answer_response_text in answer_response_text['d']['data']:
@@ -206,28 +207,27 @@ class tree_survey(models.Model):
                     survey = self.env['tree.survey'].search([('tree_survey_id', '=', survey_id)])
                     if not survey_id == '5f1296be5d082f5b6e04f65f':
                         if not survey:
-                            photo_data_1 = str(answer_response_text['F12'])
+                            photo_data_1 = str(answer_response_text['F4'])
                             phtoto_data_1 = photo_data_1.strip('data:image/jpeg;base64,')
 
-                            photo_data_2 = str(answer_response_text['F13'])
+                            photo_data_2 = str(answer_response_text['F5'])
                             phtoto_data_2 = photo_data_2.strip('data:image/jpeg;base64,')
 
-                            photo_data_3 = str(answer_response_text['F14'])
+                            photo_data_3 = str(answer_response_text['F6'])
                             phtoto_data_3 = photo_data_3.strip('data:image/jpeg;base64,')
 
                             farmer = self.env['res.partner'].search(
-                                [('farmer_id', '=', str(answer_response_text['F4']))])
+                                [('farmer_id', '=', str(answer_response_text['F1']))])
                             if not farmer:
                                 farmer.get_farmer_survey_details()
                                 farmer = self.env['res.partner'].search(
-                                    [('farmer_id', '=', str(answer_response_text['F4']))])
-
+                                    [('farmer_id', '=', str(answer_response_text['F1']))])
                             values.update({
-                                'tree_name': answer_response_text['TreeId'],
+                                'tree_name': answer_response_text['F8'],
                                 'tree_survey_id': answer_response_text['_id'],  # Survey ID
-                                'farmer_id': answer_response_text['F4'],
+                                'farmer_id': answer_response_text['F1'],
                                 'country_id': farmer.country_id.id,
-                                'gps_location': answer_response_text['F11'],
+                                'gps_location': answer_response_text['F2'],
                                 'tree_image_1': '/' + phtoto_data_1,
                                 'tree_image_2': '/' + phtoto_data_2,
                                 'tree_image_3': '/' + phtoto_data_3,
@@ -250,16 +250,16 @@ class tree_survey(models.Model):
                                 categ = categ.create(val_categ)
 
                             if not tree:
-                                values.update({
+                                prod_val.update({
                                     'farmer_name': farmer.id,
                                     'farmer_id': farmer.farmer_id,
-                                    'name': answer_response_text['TreeId'],
+                                    'name': answer_response_text['F8'],
                                     'type': 'product',
                                     'categ_id': categ.id,
                                     'route_ids': [(6, 0, [route_id.id])]
                                 })
 
-                                product = tree.create(values)
+                                product = tree.create(prod_val)
 
                                 seller_val = {
                                     'name': farmer.id or 10,
