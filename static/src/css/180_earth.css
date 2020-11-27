@@ -217,7 +217,9 @@ body {
 	background-repeat: no-repeat;
 	height: 241px;
 }
-
+.o_header_affixed{
+	background: #FFD600 !important;
+}
 .pointer_bg{
 	background-image: url("../img/pointer.png");
 	background-repeat: no-repeat;
