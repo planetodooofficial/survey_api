@@ -31,7 +31,7 @@ class partner_inherit(models.Model):
     farmer_wife_name = fields.Char("Wife's Name")
     farmer_wife_age = fields.Integer("Wife's Age")
     farmer_children = fields.Integer("No. Of Children")
-    no_of_kids_ids = fields.One2many('farmer.kids.details', 'farmer_kids_details_id', string="No. Of Kids")
+    no_of_kids_ids = fields.One2many('farmer.kids.details', 'farmer_kids_details_res_partner_id', string="No. Of Kids")
     farmer_farming_list = fields.Char('What is the farmer farming on his fields? ')
     farmer_fruit_trees = fields.Selection([('Yes', 'Yes'), ('No', 'No')], string='Does the farmer grow fruit trees?')
     farmer_grow_fruit_trees = fields.Char(string='What fruit does the farmer grow?')
@@ -166,14 +166,22 @@ class partner_inherit(models.Model):
                         for name in answer_response_text['d']['data'][0]['F17']:
                             for age in answer_response_text['d']['data'][0]['F18']:
                                 for gender in answer_response_text['d']['data'][0]['F19']:
-                                    children_vals = [(0, 0, {
+                                    print(gender)
+                                    # children_vals = [(0, 0, {
+                                    #     'farmer_kids_details_id': self.id,
+                                    #     'farmer_kid_name': name,
+                                    #     'farmer_kid_age': age,
+                                    #     'farmer_kid_gender': gender,
+                                    # })]
+                                    # children_list.append(children_vals)
+                                    # values.update({'no_of_kids_ids': children_list})
+
+                                    kids_obj = self.env['farmer.kids.details'].create({
                                         'farmer_kids_details_id': self.id,
                                         'farmer_kid_name': name,
                                         'farmer_kid_age': age,
                                         'farmer_kid_gender': gender,
-                                    })]
-                                    children_list.append(children_vals)
-                                    values.update({'no_of_kids_ids': children_list})
+                                    })
 
                     # F21 Value (Does the farmer grow fruit trees?)
 
@@ -321,14 +329,14 @@ class farmer_survey(models.Model):
 
                     list_of_trees = answer_response_text['d']['data'][0]['F20']
 
-                    # country = self.env['res.country'].search([('code', '=', answer_response_text['d']['data'][0]['F28'])]).id
+                    country = self.env['res.country'].search([('code', '=', answer_response_text['d']['data'][0]['F28'])]).id
 
                     values.update({
                         'farmer_survey_id': answer_response_text['d']['data'][0]['_id'],  # Survey ID
                         'district': district.id,
                         'epa': answer_response_text['d']['data'][0]['F2'],
                         'village': village.id,
-                        # 'country_id': country,
+                        'country_id': country,
                         'farmer_name': answer_response_text['d']['data'][0]['F4'],
                         'farmer_id': answer_response_text['d']['data'][0]['F5'],
                         'farmer_photo_1': '/' + photo_data_1,  # F6
@@ -362,16 +370,23 @@ class farmer_survey(models.Model):
                         for name in answer_response_text['d']['data'][0]['F17']:
                             for age in answer_response_text['d']['data'][0]['F18']:
                                 for gender in answer_response_text['d']['data'][0]['F19']:
-                                    children_vals = [(0, 0, {
+                                    # children_vals = [(0, 0, {
+                                    #     'farmer_kids_details_id': self.id,
+                                    #     'farmer_kid_name': name,
+                                    #     'farmer_kid_age': age,
+                                    #     'farmer_kid_gender': gender,
+                                    # })]
+                                    # # print(children_vals)
+                                    # children_list.append(children_vals)
+
+                                    kids_obj = self.env['farmer.kids.details'].create({
                                         'farmer_kids_details_id': self.id,
                                         'farmer_kid_name': name,
                                         'farmer_kid_age': age,
                                         'farmer_kid_gender': gender,
-                                    })]
-                                    # print(children_vals)
-                                    children_list.append(children_vals)
+                                    })
 
-                                    values.update({'no_of_kids_ids': children_list})
+                                    # values.update({'no_of_kids_ids': children_list})
 
                     # F21 Value (Does the farmer grow fruit trees?)
 
@@ -393,12 +408,14 @@ class farmer_survey(models.Model):
                         'farmer_type': True,
                         'type': '',
                         'name': answer_response_text['d']['data'][0]['F4'],
-                        # 'country_id': country
+                        'country_id': country
                     })
 
-                    farmer = self.env['res.partner'].search([('farmer_survey_id', '=', 'farmer_survey_id')], limit=1)
+                    farmer = self.env['res.partner'].search([('farmer_survey_id', '=', 'farmer_survey_id')])
                     if not farmer:
-                        farmer.create(values)
+                        part_id = farmer.create(values)
+                        no_kids = self.env['farmer.kids.details'].search([('farmer_kids_details_id', '=',self.id)])
+                        no_kids.write({'farmer_kids_details_res_partner_id': part_id})
             else:
                 raise ValidationError(_("There's something wrong! Please check your request again."))
 
@@ -407,6 +424,7 @@ class farmer_kids_details(models.Model):
     _name = 'farmer.kids.details'
 
     farmer_kids_details_id = fields.Many2one('farmer.survey', "Farmer's Kids ID")
+    farmer_kids_details_res_partner_id = fields.Many2one('res.partner', "Farmer's Kids ID")
     farmer_kid_name = fields.Char('Name')
     farmer_kid_age = fields.Char('Age')
     farmer_kid_gender = fields.Char('Gender')

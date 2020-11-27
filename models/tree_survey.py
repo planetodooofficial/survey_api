@@ -106,7 +106,8 @@ class inherit_product(models.Model):
                                 [('tree_survey_id', '=', answer_response_text['_id'])], limit=1)
                             route_id = self.env['stock.location.route'].search([('name', '=', 'Dropship')])
 
-                            categ = self.env['product.category'].search([('name', '=', farmer.country_id.name)])
+                            categ = self.env['product.category'].search(['|',('name', '=', farmer.country_id.name),('name', '=', 'Malawi')])
+
                             if not categ:
                                 val_categ = {}
                                 val_categ.update({
@@ -240,7 +241,7 @@ class tree_survey(models.Model):
                                 [('tree_survey_id', '=', answer_response_text['_id'])], limit=1)
                             route_id = self.env['stock.location.route'].search([('name', '=', 'Dropship')])
 
-                            categ = self.env['product.category'].search([('name', '=', farmer.country_id.name)])
+                            categ = self.env['product.category'].search(['|',('name', '=', farmer.country_id.name),('name', '=', 'Malawi')])
                             if not categ:
                                 val_categ = {}
                                 val_categ.update({
