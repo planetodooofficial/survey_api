@@ -47,22 +47,30 @@ class partner_inherit(models.Model):
 
         # Authentication
         access_token = ''
-        url = 'https://earth.ff1.co.za/api/v1/User/signin'
-        email = 'planetodoo'
+        url = 'http://dms.agrotechltd.org/api/survey-data/search-data'
+        username = 'planetodoo'
         password = 'nG8#dDwes$B*WDP8qku2'
         header = {
-            "Content-Type": "application/json"
+            "Content-Type": "application/json",
+            "username":username,
+            "password":password
+
         }
 
         body = {
-            'Email': email,
-            'Password': password
+            "_ids": {
+                "PId": "5f0ea9f2b92e9cbc41480a7b",
+                "SNId": "5fb5128ccf7a2188672b3621",
+                "SId": "5fb7501a5b08adb808f18cc0"
+
+            },
+            "_page": {"per": 10, "page": 1}
+
         }
 
         response = requests.post(url, data=json.dumps(body), headers=header)
         if response.status_code == 200:
             response_text = json.loads(response.text)
-            access_token = response_text['d']['token']
         else:
             raise ValidationError(_("There's something wrong! Please check your request again."))
 
@@ -70,145 +78,124 @@ class partner_inherit(models.Model):
 
         phtoto_data_1 = ''
 
-        if access_token:
-            answer_url = 'https://earth.ff1.co.za/api/v1/Survey/5f0eda300fdfb21193f3f5c4/answer'
-            body_data = {
-                "paging": {"size": 20, "page": 1},
-                "sort": {"_UD": -1},
-                "where": {"_UD": {"$gt": "2020-06-01", "$lt": "2020-08-01"}}
-            }
-            answer_header = {
-                "Content-Type": "application/json",
-                'Authorization': str(access_token)
-            }
+        if response.status_code == 200:
+            response_text = json.loads(response.text)
+            values = {}
+            children_list = []
+            survey_id = str(response_text['d'][0]['_id'])
+            survey = self.env['farmer.survey'].search([('farmer_survey_id', '=', survey_id)])
+            if not survey:
+                # F1 Value
+                district_values = {
+                    'district_name': response_text['d'][0]['district']
+                }
 
-            answer_response = requests.get(answer_url, data=json.dumps(body_data), headers=answer_header)
-            if answer_response.status_code == 200:
-                answer_response_text = json.loads(answer_response.text)
-                values = {}
-                children_list = []
-                survey_id = str(answer_response_text['d']['data'][0]['_id'])
-                survey = self.env['farmer.survey'].search([('farmer_survey_id', '=', survey_id)])
-                if not survey:
+                district = self.env['res.district'].create(district_values)
 
-                    # F1 Value
-                    district_values = {
-                        'district_name': answer_response_text['d']['data'][0]['F1']
-                    }
+                # F3 Value
+                village_values = {
+                    'district_name': district.id,
+                    'village_name': response_text['d'][0]['village']
+                }
 
-                    district = self.env['res.district'].create(district_values)
+                village = self.env['res.district.village'].create(village_values)
 
-                    # F3 Value
-                    village_values = {
-                        'district_name': district.id,
-                        'village_name': answer_response_text['d']['data'][0]['F3']
-                    }
+                p_data_1 = str(response_text['d'][0]['farmer_photo_1'])
+                photo_data_1 = p_data_1.strip('data:image/jpeg;base64,')
 
-                    village = self.env['res.district.village'].create(village_values)
+                p_data_2 = str(response_text['d'][0]['farmer_photo_2'])
+                photo_data_2 = p_data_2.strip('data:image/jpeg;base64,')
 
-                    p_data_1 = str(answer_response_text['d']['data'][0]['F6'])
-                    photo_data_1 = p_data_1.strip('data:image/jpeg;base64,')
+                p_data_3 = str(response_text['d'][0]['farmer_photo_3'])
+                photo_data_3 = p_data_3.strip('data:image/jpeg;base64,')
 
-                    p_data_2 = str(answer_response_text['d']['data'][0]['F7'])
-                    photo_data_2 = p_data_2.strip('data:image/jpeg;base64,')
+                p_data_4 = str(response_text['d'][0]['farmer_photo_4_family'])
+                photo_data_4 = p_data_4.strip('data:image/jpeg;base64,')
 
-                    p_data_3 = str(answer_response_text['d']['data'][0]['F8'])
-                    photo_data_3 = p_data_3.strip('data:image/jpeg;base64,')
+                p_data_5 = str(response_text['d'][0]['farmer_photo_5_multiple_tree'])
+                photo_data_5 = p_data_5.strip('data:image/jpeg;base64,')
 
-                    p_data_4 = str(answer_response_text['d']['data'][0]['F9'])
-                    photo_data_4 = p_data_4.strip('data:image/jpeg;base64,')
+                # F20 Value (What is the farmer farming on his fields?)
 
-                    p_data_5 = str(answer_response_text['d']['data'][0]['F10'])
-                    photo_data_5 = p_data_5.strip('data:image/jpeg;base64,')
+                list_of_trees = response_text['d'][0]['fruit_farmer_grow']
 
-                    # F20 Value (What is the farmer farming on his fields?)
+                country = self.env['res.country'].search([('name', '=', response_text['d'][0]['country'][0])]).id
 
-                    list_of_trees = answer_response_text['d']['data'][0]['F20']
+                values.update({
+                    'farmer_survey_id': response_text['d'][0]['_id'],  # Survey ID
+                    'district': district.id,
+                    'epa': response_text['d'][0]['EPA'],
+                    'village': village.id,
+                    'country_id': country,
+                    'farmer_name': response_text['d'][0]['farmer_name'],
+                    'farmer_id': response_text['d'][0]['180_farmer_Id'],
+                    'farmer_photo_1': '/' + photo_data_1,  # F6
+                    'farmer_photo_2': '/' + photo_data_2,  # F7
+                    'farmer_photo_3': '/' + photo_data_3,  # F8
+                    'farmer_photo_4': '/' + photo_data_4,  # F9
+                    'farmer_photo_5': '/' + photo_data_5,  # F10
+                    'farmer_national_id': response_text['d'][0]['national_ID'],
+                    'farmer_age': int(response_text['d'][0]['age_of_farmer']),
+                    'farmer_wife_name': response_text['d'][0]['wife_name'],
+                    'farmer_wife_age': int(response_text['d'][0]['wife_age']),
+                    'farmer_children': int(response_text['d'][0]['number_of_kids']),
+                    'no_of_kids_ids': children_list,  # F17 - F19
+                    'farmer_farming_list': list_of_trees,  # F20
+                    'farmer_grow_fruit_trees': response_text['d'][0]['farmer_grow_fruit_trees'],  # F22
+                    'no_of_tres_for_planting': int(response_text['d'][0]['trees_farmer_would_like_plant']),
+                    'get_firewood_from': response_text['d'][0]['source_of_firewood'],
+                    'hours_taken_per_week': float(response_text['d'][0]['hours_per_week']),
+                    # 'comments': answer_response_text['d'][0]['F27'],
+                })
 
-                    country = self.env['res.country'].search([('code', '=', answer_response_text['d']['data'][0]['F28'])]).id
+                #  F13 Value (Is Married?)
+                if response_text['d'][0]['married'][0] == 'Yes':
+                    values.update({'is_married': 'Yes'})
+                else:
+                    values.update({'is_married': 'No'})
 
-                    values.update({
-                        'farmer_survey_id': answer_response_text['d']['data'][0]['_id'],  # Survey ID
-                        'district': district.id,
-                        'epa': answer_response_text['d']['data'][0]['F2'],
-                        'village': village.id,
-                        'country_id': country,
-                        'farmer_name': answer_response_text['d']['data'][0]['F4'],
-                        'farmer_id': answer_response_text['d']['data'][0]['F5'],
-                        'farmer_photo_1': '/' + photo_data_1,  # F6
-                        'farmer_photo_2': '/' + photo_data_2,  # F7
-                        'farmer_photo_3': '/' + photo_data_3,  # F8
-                        'farmer_photo_4': '/' + photo_data_4,  # F9
-                        'farmer_photo_5': '/' + photo_data_5,  # F10
-                        'farmer_national_id': answer_response_text['d']['data'][0]['F11'],
-                        'farmer_age': int(answer_response_text['d']['data'][0]['F12']),
-                        'farmer_wife_name': answer_response_text['d']['data'][0]['F14'],
-                        'farmer_wife_age': int(answer_response_text['d']['data'][0]['F15']),
-                        'farmer_children': int(answer_response_text['d']['data'][0]['F16']),
-                        'no_of_kids_ids': children_list,  # F17 - F19
-                        'farmer_farming_list': list_of_trees,  # F20
-                        'farmer_grow_fruit_trees': answer_response_text['d']['data'][0]['F22'],  # F22
-                        'no_of_tres_for_planting': int(answer_response_text['d']['data'][0]['F23']),
-                        'get_firewood_from': answer_response_text['d']['data'][0]['F25'],
-                        'hours_taken_per_week': float(answer_response_text['d']['data'][0]['F26']),
-                        # 'comments': answer_response_text['d']['data'][0]['F27'],
-                    })
+                # F17 - F19 Values (No. Of Children)
 
-                    #  F13 Value (Is Married?)
-                    if answer_response_text['d']['data'][0]['F13'] == True:
-                        values.update({'is_married': 'Yes'})
-                    else:
-                        values.update({'is_married': 'No'})
+                if response_text['d'][0]['married'][0] == 'Yes':
+                    for name in response_text['d'][0]['name_of_kid']:
+                        pos_tion = response_text['d'][0]['name_of_kid'].index(name)
+                        age = response_text['d'][0]['age_of_kid'][pos_tion]
+                        gender = response_text['d'][0]['gender_of_kid'][pos_tion]
+                        # for age in response_text['d'][0]['age_of_kid']:
+                        #     for gender in response_text['d'][0]['gender_of_kid']:
+                        kids_objs = self.env['farmer.kids.details'].create({
+                            'farmer_kids_details_id': self.id,
+                            'farmer_kid_name': name,
+                            'farmer_kid_age': age,
+                            'farmer_kid_gender': gender,
+                        })
 
-                    # F17 - F19 Values (No. Of Children)
+                # F21 Value (Does the farmer grow fruit trees?)
 
-                    if answer_response_text['d']['data'][0]['F13'] == True:
-                        for name in answer_response_text['d']['data'][0]['F17']:
-                            for age in answer_response_text['d']['data'][0]['F18']:
-                                for gender in answer_response_text['d']['data'][0]['F19']:
-                                    print(gender)
-                                    # children_vals = [(0, 0, {
-                                    #     'farmer_kids_details_id': self.id,
-                                    #     'farmer_kid_name': name,
-                                    #     'farmer_kid_age': age,
-                                    #     'farmer_kid_gender': gender,
-                                    # })]
-                                    # children_list.append(children_vals)
-                                    # values.update({'no_of_kids_ids': children_list})
+                if response_text['d'][0]['farmer_grow_fruit_trees'][0] == 'Yes':
+                    values.update({'farmer_fruit_trees': 'Yes'})
+                else:
+                    values.update({'farmer_fruit_trees': 'No'})
 
-                                    kids_obj = self.env['farmer.kids.details'].create({
-                                        'farmer_kids_details_id': self.id,
-                                        'farmer_kid_name': name,
-                                        'farmer_kid_age': age,
-                                        'farmer_kid_gender': gender,
-                                    })
+                # F24 Value (Does he have an energy efficient cook-stove?)
+                if response_text['d'][0]['have_energy_efficient_cookstove'][0] == 'Yes':
+                    values.update({'efficient_cook_stove': 'Yes'})
+                else:
+                    values.update({'efficient_cook_stove': 'No'})
 
-                    # F21 Value (Does the farmer grow fruit trees?)
+                self.update(values)
 
-                    if answer_response_text['d']['data'][0]['F21'] == 'Yes':
-                        values.update({'farmer_fruit_trees': 'Yes'})
-                    else:
-                        values.update({'farmer_fruit_trees': 'No'})
+                values.update({
+                    'company_type': 'person',
+                    'farmer_type': True,
+                    'type': '',
+                    'name': response_text['d'][0]['farmer_name'],
+                    'country_id': country
+                })
 
-                    # F24 Value (Does he have an energy efficient cook-stove?)
-                    if answer_response_text['d']['data'][0]['F24'] == 'Yes':
-                        values.update({'efficient_cook_stove': 'Yes'})
-                    else:
-                        values.update({'efficient_cook_stove': 'No'})
-
-                    self.update(values)
-
-                    values.update({
-                        'company_type': 'person',
-                        'farmer_type': True,
-                        'type': '',
-                        'name': answer_response_text['d']['data'][0]['F4'],
-                        'country_id': country
-                    })
-
-                    farmer = self.env['res.partner'].search([('farmer_survey_id', '=', 'farmer_survey_id')], limit=1)
-                    if not farmer:
-                        farmer.create(values)
+                farmer = self.env['res.partner'].search([('farmer_survey_id', '=', 'farmer_survey_id')], limit=1)
+                if not farmer:
+                    farmer.create(values)
             else:
                 raise ValidationError(_("There's something wrong! Please check your request again."))
 
@@ -251,22 +238,31 @@ class farmer_survey(models.Model):
 
         # Authentication
         access_token = ''
-        url = 'https://earth.ff1.co.za/api/v1/User/signin'
-        email = 'planetodoo'
+        url = 'http://dms.agrotechltd.org/api/survey-data/search-data'
+        username = 'planetodoo'
         password = 'nG8#dDwes$B*WDP8qku2'
         header = {
-            "Content-Type": "application/json"
+            "Content-Type": "application/json",
+            "username":username,
+            "password":password
+
         }
 
         body = {
-            'Email': email,
-            'Password': password
+            "_ids": {
+                "PId": "5f0ea9f2b92e9cbc41480a7b",
+                "SNId": "5fb5128ccf7a2188672b3621",
+                "SId": "5fb7501a5b08adb808f18cc0"
+
+            },
+            "_page": {"per": 10, "page": 1}
+
         }
 
         response = requests.post(url, data=json.dumps(body), headers=header)
         if response.status_code == 200:
             response_text = json.loads(response.text)
-            access_token = response_text['d']['token']
+            print(response_text)
         else:
             raise ValidationError(_("There's something wrong! Please check your request again."))
 
@@ -274,148 +270,129 @@ class farmer_survey(models.Model):
 
         phtoto_data_1 = ''
 
-        if access_token:
-            answer_url = 'https://earth.ff1.co.za/api/v1/Survey/5f0eda300fdfb21193f3f5c4/answer'
-            body_data = {
-                "paging": {"size": 20, "page": 1},
-                "sort": {"_UD": -1},
-                "where": {"_UD": {"$gt": "2020-06-01", "$lt": "2020-08-01"}}
-            }
-            answer_header = {
-                "Content-Type": "application/json",
-                'Authorization': str(access_token)
-            }
+        if response.status_code == 200:
+            response_text = json.loads(response.text)
+            values = {}
+            children_list = []
+            survey_id = str(response_text['d'][0]['_id'])
+            survey = self.env['farmer.survey'].search([('farmer_survey_id', '=', survey_id)])
+            print(survey)
+            print(survey_id)
+            if not survey:
+                # F1 Value
+                district_values = {
+                    'district_name': response_text['d'][0]['district']
+                }
 
-            answer_response = requests.get(answer_url, data=json.dumps(body_data), headers=answer_header)
-            if answer_response.status_code == 200:
-                answer_response_text = json.loads(answer_response.text)
-                values = {}
-                children_list = []
-                survey_id = str(answer_response_text['d']['data'][0]['_id'])
-                survey = self.env['farmer.survey'].search([('farmer_survey_id', '=', survey_id)])
-                if not survey:
+                district = self.env['res.district'].create(district_values)
 
-                    # F1 Value
-                    district_values = {
-                        'district_name': answer_response_text['d']['data'][0]['F1']
-                    }
+                # F3 Value
+                village_values = {
+                    'district_name': district.id,
+                    'village_name': response_text['d'][0]['village']
+                }
 
-                    district = self.env['res.district'].create(district_values)
+                village = self.env['res.district.village'].create(village_values)
 
-                    # F3 Value
-                    village_values = {
-                        'district_name': district.id,
-                        'village_name': answer_response_text['d']['data'][0]['F3']
-                    }
+                p_data_1 = str(response_text['d'][0]['farmer_photo_1'])
+                photo_data_1 = p_data_1.strip('data:image/jpeg;base64,')
 
-                    village = self.env['res.district.village'].create(village_values)
+                p_data_2 = str(response_text['d'][0]['farmer_photo_2'])
+                photo_data_2 = p_data_2.strip('data:image/jpeg;base64,')
 
-                    p_data_1 = str(answer_response_text['d']['data'][0]['F6'])
-                    photo_data_1 = p_data_1.strip('data:image/jpeg;base64,')
+                p_data_3 = str(response_text['d'][0]['farmer_photo_3'])
+                photo_data_3 = p_data_3.strip('data:image/jpeg;base64,')
 
-                    p_data_2 = str(answer_response_text['d']['data'][0]['F7'])
-                    photo_data_2 = p_data_2.strip('data:image/jpeg;base64,')
+                p_data_4 = str(response_text['d'][0]['farmer_photo_4_family'])
+                photo_data_4 = p_data_4.strip('data:image/jpeg;base64,')
 
-                    p_data_3 = str(answer_response_text['d']['data'][0]['F8'])
-                    photo_data_3 = p_data_3.strip('data:image/jpeg;base64,')
+                p_data_5 = str(response_text['d'][0]['farmer_photo_5_multiple_tree'])
+                photo_data_5 = p_data_5.strip('data:image/jpeg;base64,')
 
-                    p_data_4 = str(answer_response_text['d']['data'][0]['F9'])
-                    photo_data_4 = p_data_4.strip('data:image/jpeg;base64,')
+                # F20 Value (What is the farmer farming on his fields?)
 
-                    p_data_5 = str(answer_response_text['d']['data'][0]['F10'])
-                    photo_data_5 = p_data_5.strip('data:image/jpeg;base64,')
+                list_of_trees = response_text['d'][0]['fruit_farmer_grow']
 
-                    # F20 Value (What is the farmer farming on his fields?)
+                country = self.env['res.country'].search([('name', '=', response_text['d'][0]['country'][0])]).id
 
-                    list_of_trees = answer_response_text['d']['data'][0]['F20']
+                values.update({
+                    'farmer_survey_id': response_text['d'][0]['_id'],  # Survey ID
+                    'district': district.id,
+                    'epa': response_text['d'][0]['EPA'],
+                    'village': village.id,
+                    'country_id': country,
+                    'farmer_name': response_text['d'][0]['farmer_name'],
+                    'farmer_id': response_text['d'][0]['180_farmer_Id'],
+                    'farmer_photo_1': '/' + photo_data_1,  # F6
+                    'farmer_photo_2': '/' + photo_data_2,  # F7
+                    'farmer_photo_3': '/' + photo_data_3,  # F8
+                    'farmer_photo_4': '/' + photo_data_4,  # F9
+                    'farmer_photo_5': '/' + photo_data_5,  # F10
+                    'farmer_national_id': response_text['d'][0]['national_ID'],
+                    'farmer_age': int(response_text['d'][0]['age_of_farmer']),
+                    'farmer_wife_name': response_text['d'][0]['wife_name'],
+                    'farmer_wife_age': int(response_text['d'][0]['wife_age']),
+                    'farmer_children': int(response_text['d'][0]['number_of_kids']),
+                    'no_of_kids_ids': children_list,  # F17 - F19
+                    'farmer_farming_list': list_of_trees,  # F20
+                    'farmer_grow_fruit_trees': response_text['d'][0]['farmer_grow_fruit_trees'],  # F22
+                    'no_of_tres_for_planting': int(response_text['d'][0]['trees_farmer_would_like_plant']),
+                    'get_firewood_from': response_text['d'][0]['source_of_firewood'],
+                    'hours_taken_per_week': float(response_text['d'][0]['hours_per_week']),
+                    # 'comments': answer_response_text['d'][0]['F27'],
+                })
 
-                    country = self.env['res.country'].search([('code', '=', answer_response_text['d']['data'][0]['F28'])]).id
+                #  F13 Value (Is Married?)
+                if response_text['d'][0]['married'][0] == 'Yes':
+                    values.update({'is_married': 'Yes'})
+                else:
+                    values.update({'is_married': 'No'})
 
-                    values.update({
-                        'farmer_survey_id': answer_response_text['d']['data'][0]['_id'],  # Survey ID
-                        'district': district.id,
-                        'epa': answer_response_text['d']['data'][0]['F2'],
-                        'village': village.id,
-                        'country_id': country,
-                        'farmer_name': answer_response_text['d']['data'][0]['F4'],
-                        'farmer_id': answer_response_text['d']['data'][0]['F5'],
-                        'farmer_photo_1': '/' + photo_data_1,  # F6
-                        'farmer_photo_2': '/' + photo_data_2,  # F7
-                        'farmer_photo_3': '/' + photo_data_3,  # F8
-                        'farmer_photo_4': '/' + photo_data_4,  # F9
-                        'farmer_photo_5': '/' + photo_data_5,  # F10
-                        'farmer_national_id': answer_response_text['d']['data'][0]['F11'],
-                        'farmer_age': int(answer_response_text['d']['data'][0]['F12']),
-                        'farmer_wife_name': answer_response_text['d']['data'][0]['F14'],
-                        'farmer_wife_age': int(answer_response_text['d']['data'][0]['F15']),
-                        'farmer_children': int(answer_response_text['d']['data'][0]['F16']),
-                        'no_of_kids_ids': children_list,  # F17 - F19
-                        'farmer_farming_list': list_of_trees,  # F20
-                        'farmer_grow_fruit_trees': answer_response_text['d']['data'][0]['F22'],  # F22
-                        'no_of_tres_for_planting': int(answer_response_text['d']['data'][0]['F23']),
-                        'get_firewood_from': answer_response_text['d']['data'][0]['F25'],
-                        'hours_taken_per_week': float(answer_response_text['d']['data'][0]['F26']),
-                        # 'comments': answer_response_text['d']['data'][0]['F27'],
-                    })
+                # F17 - F19 Values (No. Of Children)
 
-                    #  F13 Value (Is Married?)
-                    if answer_response_text['d']['data'][0]['F13'] == True:
-                        values.update({'is_married': 'Yes'})
-                    else:
-                        values.update({'is_married': 'No'})
+                if response_text['d'][0]['married'][0] == 'Yes':
+                    for name in response_text['d'][0]['name_of_kid']:
+                        pos_tion = response_text['d'][0]['name_of_kid'].index(name)
+                        age=response_text['d'][0]['age_of_kid'][pos_tion]
+                        gender=response_text['d'][0]['gender_of_kid'][pos_tion]
+                        # for age in response_text['d'][0]['age_of_kid']:
+                        #     for gender in response_text['d'][0]['gender_of_kid']:
+                        kids_objs = self.env['farmer.kids.details'].create({
+                            'farmer_kids_details_id': self.id,
+                            'farmer_kid_name': name,
+                            'farmer_kid_age': age,
+                            'farmer_kid_gender': gender,
+                        })
 
-                    # F17 - F19 Values (No. Of Children)
 
-                    if answer_response_text['d']['data'][0]['F13'] == True:
-                        for name in answer_response_text['d']['data'][0]['F17']:
-                            for age in answer_response_text['d']['data'][0]['F18']:
-                                for gender in answer_response_text['d']['data'][0]['F19']:
-                                    # children_vals = [(0, 0, {
-                                    #     'farmer_kids_details_id': self.id,
-                                    #     'farmer_kid_name': name,
-                                    #     'farmer_kid_age': age,
-                                    #     'farmer_kid_gender': gender,
-                                    # })]
-                                    # # print(children_vals)
-                                    # children_list.append(children_vals)
+                # F21 Value (Does the farmer grow fruit trees?)
 
-                                    kids_obj = self.env['farmer.kids.details'].create({
-                                        'farmer_kids_details_id': self.id,
-                                        'farmer_kid_name': name,
-                                        'farmer_kid_age': age,
-                                        'farmer_kid_gender': gender,
-                                    })
+                if response_text['d'][0]['farmer_grow_fruit_trees'][0] == 'Yes':
+                    values.update({'farmer_fruit_trees': 'Yes'})
+                else:
+                    values.update({'farmer_fruit_trees': 'No'})
 
-                                    # values.update({'no_of_kids_ids': children_list})
+                # F24 Value (Does he have an energy efficient cook-stove?)
+                if response_text['d'][0]['have_energy_efficient_cookstove'][0] == 'Yes':
+                    values.update({'efficient_cook_stove': 'Yes'})
+                else:
+                    values.update({'efficient_cook_stove': 'No'})
 
-                    # F21 Value (Does the farmer grow fruit trees?)
+                self.update(values)
 
-                    if answer_response_text['d']['data'][0]['F21'] == 'Yes':
-                        values.update({'farmer_fruit_trees': 'Yes'})
-                    else:
-                        values.update({'farmer_fruit_trees': 'No'})
+                values.update({
+                    'company_type': 'person',
+                    'farmer_type': True,
+                    'type': '',
+                    'name': response_text['d'][0]['farmer_name'],
+                    'country_id': country
+                })
 
-                    # F24 Value (Does he have an energy efficient cook-stove?)
-                    if answer_response_text['d']['data'][0]['F24'] == 'Yes':
-                        values.update({'efficient_cook_stove': 'Yes'})
-                    else:
-                        values.update({'efficient_cook_stove': 'No'})
-
-                    self.update(values)
-
-                    values.update({
-                        'company_type': 'person',
-                        'farmer_type': True,
-                        'type': '',
-                        'name': answer_response_text['d']['data'][0]['F4'],
-                        'country_id': country
-                    })
-
-                    farmer = self.env['res.partner'].search([('farmer_survey_id', '=', 'farmer_survey_id')])
-                    if not farmer:
-                        part_id = farmer.create(values)
-                        no_kids = self.env['farmer.kids.details'].search([('farmer_kids_details_id', '=',self.id)])
-                        no_kids.write({'farmer_kids_details_res_partner_id': part_id})
+                farmer = self.env['res.partner'].search([('farmer_survey_id', '=', 'farmer_survey_id')])
+                if not farmer:
+                    part_id = farmer.create(values)
+                    no_kids = self.env['farmer.kids.details'].search([('farmer_kids_details_id', '=',self.id)])
+                    no_kids.write({'farmer_kids_details_res_partner_id': part_id})
             else:
                 raise ValidationError(_("There's something wrong! Please check your request again."))
 

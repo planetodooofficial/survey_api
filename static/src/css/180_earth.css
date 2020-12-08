@@ -603,10 +603,6 @@ background-image: url("../img/footer_giraffe.png");
     display: none;
 }
 
-.navbar-brand{
-	display: none;
-}
-
 .navbar-collapse {
 /*    flex-basis: 100%;
     flex-grow: 1; */
