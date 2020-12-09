@@ -97,7 +97,7 @@ class inherit_product(models.Model):
                             'tree_image_2': '/' + phtoto_data_2,
                             'tree_image_3': '/' + phtoto_data_3,
                             'survey_date': response_text['date_capture'],
-                            'tree_type': response_text['tree_type'],
+                            'tree_type': response_text['tree_type'][0],
                         })
 
                         self.env['tree.survey'].create(values)
@@ -232,7 +232,7 @@ class tree_survey(models.Model):
                             'tree_image_2': '/' + phtoto_data_2,
                             'tree_image_3': '/' + phtoto_data_3,
                             'survey_date': response_text['date_capture'],
-                            'tree_type': response_text['tree_type'],
+                            'tree_type': response_text['tree_type'][0],
                         })
 
                         self.env['tree.survey'].create(values)

@@ -87,7 +87,7 @@ class partner_inherit(models.Model):
             if not survey:
                 # F1 Value
                 district_values = {
-                    'district_name': response_text['d'][0]['district']
+                    'district_name': response_text['d'][0]['district'][0]
                 }
 
                 district = self.env['res.district'].create(district_values)
@@ -117,14 +117,14 @@ class partner_inherit(models.Model):
 
                 # F20 Value (What is the farmer farming on his fields?)
 
-                list_of_trees = response_text['d'][0]['fruit_farmer_grow']
+                list_of_trees = response_text['d'][0]['fruit_farmer_grow'][0]
 
                 country = self.env['res.country'].search([('name', '=', response_text['d'][0]['country'][0])]).id
 
                 values.update({
                     'farmer_survey_id': response_text['d'][0]['_id'],  # Survey ID
                     'district': district.id,
-                    'epa': response_text['d'][0]['EPA'],
+                    'epa': response_text['d'][0]['EPA'][0],
                     'village': village.id,
                     'country_id': country,
                     'farmer_name': response_text['d'][0]['farmer_name'],
@@ -160,7 +160,7 @@ class partner_inherit(models.Model):
                     for name in response_text['d'][0]['name_of_kid']:
                         pos_tion = response_text['d'][0]['name_of_kid'].index(name)
                         age = response_text['d'][0]['age_of_kid'][pos_tion]
-                        gender = response_text['d'][0]['gender_of_kid'][pos_tion]
+                        gender = response_text['d'][0]['gender_of_kid'][pos_tion][0]
                         # for age in response_text['d'][0]['age_of_kid']:
                         #     for gender in response_text['d'][0]['gender_of_kid']:
                         kids_objs = self.env['farmer.kids.details'].create({
@@ -281,7 +281,7 @@ class farmer_survey(models.Model):
             if not survey:
                 # F1 Value
                 district_values = {
-                    'district_name': response_text['d'][0]['district']
+                    'district_name': response_text['d'][0]['district'][0]
                 }
 
                 district = self.env['res.district'].create(district_values)
@@ -311,14 +311,14 @@ class farmer_survey(models.Model):
 
                 # F20 Value (What is the farmer farming on his fields?)
 
-                list_of_trees = response_text['d'][0]['fruit_farmer_grow']
+                list_of_trees = response_text['d'][0]['fruit_farmer_grow'][0]
 
                 country = self.env['res.country'].search([('name', '=', response_text['d'][0]['country'][0])]).id
 
                 values.update({
                     'farmer_survey_id': response_text['d'][0]['_id'],  # Survey ID
                     'district': district.id,
-                    'epa': response_text['d'][0]['EPA'],
+                    'epa': response_text['d'][0]['EPA'][0],
                     'village': village.id,
                     'country_id': country,
                     'farmer_name': response_text['d'][0]['farmer_name'],
@@ -354,7 +354,7 @@ class farmer_survey(models.Model):
                     for name in response_text['d'][0]['name_of_kid']:
                         pos_tion = response_text['d'][0]['name_of_kid'].index(name)
                         age=response_text['d'][0]['age_of_kid'][pos_tion]
-                        gender=response_text['d'][0]['gender_of_kid'][pos_tion]
+                        gender=response_text['d'][0]['gender_of_kid'][pos_tion][0]
                         # for age in response_text['d'][0]['age_of_kid']:
                         #     for gender in response_text['d'][0]['gender_of_kid']:
                         kids_objs = self.env['farmer.kids.details'].create({
