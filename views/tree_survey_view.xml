@@ -67,9 +67,9 @@
         <field name="model">product.template</field>
         <field name="inherit_id" ref="product.product_template_only_form_view"/>
         <field name="arch" type="xml">
-            <header>
-                <button name="get_trees_survey_details" type="object" string="Get Response" class="oe_highlight"/>
-            </header>
+<!--            <header>-->
+<!--                <button name="get_trees_survey_details" type="object" string="Get Response" class="oe_highlight"/>-->
+<!--            </header>-->
             <xpath expr="//page[@name='inventory']" position="after">
                 <page string="Tree's Info" name="tree_info">
                     <group>

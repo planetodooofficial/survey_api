@@ -1,0 +1,36 @@
+<odoo>
+    <data>
+        <!--  FORM  -->
+        <record id="survey_api_setting_form_view" model="ir.ui.view">
+            <field name="name">survey.api.setting.form.view</field>
+            <field name="model">config.survey</field>
+            <field name="arch" type="xml">
+                <form create="false" delete="false">
+                    <sheet>
+                        <group>
+                            <group>
+                                <div>
+                                    <label for="pid" string="Project Id"/>
+                                    <field name="pid" class="oe_inline" style="width: 70% !important;"/>
+                                    <br/>
+                                    <label for="snid" string="SNID"/>
+                                    <field name="snid" class="oe_inline" style="width: 70% !important;"/>
+                                </div>
+                            </group>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+        <!--  ACTION  -->
+        <record id="survey_api_setting_action" model="ir.actions.act_window">
+            <field name="name">Theme Settings</field>
+            <field name="res_model">config.survey</field>
+            <field name="view_mode">form</field>
+            <field name="res_id">1</field>
+        </record>
+        <!--  MENU ITEM  -->
+        <menuitem id="survey_api_setting_menuitem" action="survey_api_setting_action" parent="survey_details_id"
+                  groups="base.group_system" sequence="10"/>
+    </data>
+</odoo>

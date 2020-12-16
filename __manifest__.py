@@ -22,6 +22,7 @@
         'views/custom_css.xml',
         'views/stock_picking_type_views.xml',
         'views/product_batch_split.xml',
+        'views/configuration_view.xml',
     ],
     'installable': True,
     'auto_install': False,

@@ -6,3 +6,4 @@ from . import district_village
 from . import products_batch_split
 from . import stock_move
 from . import stock_picking_type
+from . import configuration

@@ -107,7 +107,7 @@
                        attrs="{'invisible':[('is_company', '=', True)]}"/>
             </xpath>
             <xpath expr="//page[@name='internal_notes']" position="after">
-                <page string="Farmer's Info" name="farmer_info">
+                <page string="Farmer's Info" name="farmer_info" attrs="{'invisible':[('farmer_type', '=', True)]}">
                     <group>
                         <group name="Farmer's Info">
                             <field name="farmer_survey_id"/>
