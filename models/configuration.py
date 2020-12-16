@@ -9,6 +9,7 @@ import json
 
 class Config_Survey(models.Model):
     _name = 'config.survey'
+    _rec_name= 'pid'
 
     pid = fields.Char('project_id')
     snid = fields.Char('SNid')

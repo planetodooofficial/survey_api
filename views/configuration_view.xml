@@ -1,5 +1,6 @@
 <odoo>
     <data>
+
         <!--  FORM  -->
         <record id="survey_api_setting_form_view" model="ir.ui.view">
             <field name="name">survey.api.setting.form.view</field>
@@ -22,13 +23,15 @@
                 </form>
             </field>
         </record>
+
         <!--  ACTION  -->
         <record id="survey_api_setting_action" model="ir.actions.act_window">
-            <field name="name">Theme Settings</field>
+            <field name="name">API Configuration</field>
             <field name="res_model">config.survey</field>
             <field name="view_mode">form</field>
             <field name="res_id">1</field>
         </record>
+
         <!--  MENU ITEM  -->
         <menuitem id="survey_api_setting_menuitem" action="survey_api_setting_action" parent="survey_details_id"
                   groups="base.group_system" sequence="10"/>

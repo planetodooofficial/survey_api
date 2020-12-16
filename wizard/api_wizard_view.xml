@@ -1,0 +1,54 @@
+<odoo>
+
+    <record model="ir.ui.view" id="api_wizard_form_view">
+        <field name="name">api.wizard.form.view</field>
+        <field name="model">api.wizard</field>
+        <field name="type">form</field>
+        <field name="arch" type="xml">
+            <form string="Import Records">
+                <sheet>
+                    <group>
+                        <button name="get_farmer_survey_details" type="object" string="Import Farmer Survey" class="oe_highlight"/>
+                        <button name="get_trees_survey_details" type="object" string="Import Tree Survey" class="oe_highlight"/>
+<!--                        <button name="" type="object" string="Import Water Wells Survey" class="oe_highlight"/>-->
+<!--                        <button name="" type="object" string="Import Cookstove Survey" class="oe_highlight"/>-->
+                    </group>
+
+                    <group>
+                        <button name="get_cookstove_survey_details" type="object" string="Import Cookstove Survey" class="oe_highlight"/>
+                        <button name="get_waterwell_survey_details" type="object" string="Import Water Wells Survey" class="oe_highlight"/>
+                    </group>
+                </sheet>
+                <footer>
+
+                    <button special="cancel" string="Cancel"/>
+
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record model="ir.actions.act_window" id="api_wizard_action">
+        <field name="name">API Import</field>
+        <field name="res_model">api.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+
+
+<!--    <record id="api_wizard_action" model="ir.actions.act_window">-->
+<!--        <field name="name">API Import</field>-->
+<!--        <field name="res_model">api.wizard</field>-->
+<!--        <field name="binding_model_id" ref="survey_api.model_api_wizard"/>-->
+<!--        <field name="binding_view_types">list,form</field>-->
+<!--        <field name="view_mode">form</field>-->
+<!--        <field name="target">new</field>-->
+<!--    </record>-->
+
+    <menuitem id="api_impot_menu"
+              parent="survey_api.survey_details_id"
+              name="API Import"
+              groups="base.group_user"
+              action="api_wizard_action"/>
+
+</odoo>
