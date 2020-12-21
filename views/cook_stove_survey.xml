@@ -30,9 +30,9 @@
         <field name="model">cook.stove.survey</field>
         <field name="arch" type="xml">
             <form string="Cook Stove Survey">
-                <header>
-                    <button name="get_cookstove_survey_details" type="object" string="Get Response" class="oe_highlight"/>
-                </header>
+<!--                <header>-->
+<!--                    <button name="get_cookstove_survey_details" type="object" string="Get Response" class="oe_highlight"/>-->
+<!--                </header>-->
                 <sheet>
                     <group>
                         <group>

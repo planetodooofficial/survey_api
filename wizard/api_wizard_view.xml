@@ -14,10 +14,10 @@
 <!--                        <button name="" type="object" string="Import Cookstove Survey" class="oe_highlight"/>-->
                     </group>
 
-                    <group>
-                        <button name="get_cookstove_survey_details" type="object" string="Import Cookstove Survey" class="oe_highlight"/>
-                        <button name="get_waterwell_survey_details" type="object" string="Import Water Wells Survey" class="oe_highlight"/>
-                    </group>
+<!--                    <group>-->
+<!--                        <button name="get_cookstove_survey_details" type="object" string="Import Cookstove Survey" class="oe_highlight"/>-->
+<!--                        <button name="get_waterwell_survey_details" type="object" string="Import Water Wells Survey" class="oe_highlight"/>-->
+<!--                    </group>-->
                 </sheet>
                 <footer>
 

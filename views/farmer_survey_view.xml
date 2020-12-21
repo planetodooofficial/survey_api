@@ -28,9 +28,9 @@
         <field name="model">farmer.survey</field>
         <field name="arch" type="xml">
             <form string="Farmer's Survey">
-                <header>
-                    <button name="get_farmer_survey_details" type="object" string="Get Response" class="oe_highlight"/>
-                </header>
+<!--                <header>-->
+<!--                    <button name="get_farmer_survey_details" type="object" string="Get Response" class="oe_highlight"/>-->
+<!--                </header>-->
                 <sheet>
                     <group>
                         <group name="Farmer's Info">

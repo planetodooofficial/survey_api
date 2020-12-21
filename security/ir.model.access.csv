@@ -13,4 +13,6 @@ access_wiz_stock_move_location,wiz.stock.move.location,model_wiz_stock_move_loca
 access_wiz_stock_move_location_line,wiz.stock.move.location.line,model_wiz_stock_move_location_line,base.group_user,1,1,1,1
 access_config_survey,config.survey,model_config_survey,base.group_user,1,1,1,1
 access_api_wizard,api.wizard,model_api_wizard,base.group_user,1,1,1,1
+
 access_website_sale_detail,website.sale.detail,model_website_sale_detail,base.group_user,1,1,1,1
+access_website_sale_detail_portal,website.sale.detail,model_website_sale_detail,base.group_portal,1,1,1,1
