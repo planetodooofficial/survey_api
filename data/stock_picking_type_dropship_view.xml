@@ -1,0 +1,10 @@
+<odoo>
+    <data>
+
+        <record id="first_project" model="config.survey">
+            <field name="pid">5f0ea9f2b92e9cbc41480a7b</field>
+            <field name="snid">5fb5128ccf7a2188672b3621</field>
+        </record>
+
+    </data>
+</odoo>

@@ -29,9 +29,9 @@
         <field name="model">tree.survey</field>
         <field name="arch" type="xml">
             <form string="Trees Survey">
-                <header>
-                    <button name="get_trees_survey_details" type="object" string="Get Response" class="oe_highlight"/>
-                </header>
+<!--                <header>-->
+<!--                    <button name="get_trees_survey_details" type="object" string="Get Response" class="oe_highlight"/>-->
+<!--                </header>-->
                 <sheet>
                     <group>
                         <group>

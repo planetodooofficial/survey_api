@@ -35,6 +35,16 @@ class product_batch_split_wizard(models.TransientModel):
 
         return result
 
+
+
+    @api.onchange('split_qty')
+    def qty_check(self):
+        for qty in self:
+            if qty.split_qty > qty.available_qty:
+                raise ValidationError(_("Please enter correct quantity for Split. Split Quantity cannot be more than Available Quantity."))
+
+
+
     def split_into_products(self):
         product_product_id = self.env['product.product'].search([("product_tmpl_id", "=", self.product_id.id)])
         product = self.env['stock.quant'].sudo().search([('product_id', '=',product_product_id.id)], limit=1)

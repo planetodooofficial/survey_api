@@ -28,9 +28,9 @@
         <field name="model">water.well.survey</field>
         <field name="arch" type="xml">
             <form string="Water Well Survey">
-                <header>
-                    <button name="get_waterwell_survey_details" type="object" string="Get Response" class="oe_highlight"/>
-                </header>
+<!--                <header>-->
+<!--                    <button name="get_waterwell_survey_details" type="object" string="Get Response" class="oe_highlight"/>-->
+<!--                </header>-->
                 <sheet>
                     <group>
                         <group>
