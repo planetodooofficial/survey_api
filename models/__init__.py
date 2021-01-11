@@ -8,4 +8,4 @@ from . import stock_move
 from . import stock_picking_type
 from . import configuration
 from . import res_partner_inherit
-# from . import res_users_inherit
+from . import res_users_inherit
