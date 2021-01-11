@@ -14,8 +14,18 @@ class ApiCallWizard(models.TransientModel):
         # Authentication
         access_token = ''
         url = 'http://dms.agrotechltd.org/api/survey/filter'
-        username = 'planetodoo'
-        password = 'nG8#dDwes$B*WDP8qku2'
+
+        cur_user = self.env.user
+
+        # username = 'planetodoo'
+        # password = 'nG8#dDwes$B*WDP8qku2'
+
+        username = cur_user.api_user
+        password = cur_user.api_pwd
+
+        if not username or not password:
+            raise UserError(_("Please Enter API Credentials for your User."))
+
         header = {
             "Content-Type": "application/json",
             "username": username,
@@ -197,7 +207,9 @@ class ApiCallWizard(models.TransientModel):
                         'farmer_type': True,
                         'type': '',
                         'name': response_text['d'][0]['farmer_name'],
-                        'country_id': country
+                        'country_id': country,
+                        'image_1920': '/' + photo_data_1,
+                        # 'survey_id': farmer_obj_id.id,
                     })
 
                     farmer = self.env['res.partner'].search([('farmer_survey_id', '=', 'farmer_survey_id')])
@@ -219,8 +231,17 @@ class ApiCallWizard(models.TransientModel):
         # Authentication
         access_token = ''
         url = 'http://dms.agrotechltd.org/api/survey/filter'
-        username = 'planetodoo'
-        password = 'nG8#dDwes$B*WDP8qku2'
+        # username = 'planetodoo'
+        # password = 'nG8#dDwes$B*WDP8qku2'
+
+        cur_user = self.env.user
+
+        username = cur_user.api_user
+        password = cur_user.api_pwd
+
+        if not username or not password:
+            raise UserError(_("Please Enter API Credentials for your User."))
+
         header = {
             "Content-Type": "application/json",
             "username": username,
@@ -307,7 +328,7 @@ class ApiCallWizard(models.TransientModel):
                             })
 
                             # self.write(values)
-                            self.env['tree.survey'].create(values)
+                            new_tree_survey_obj = self.env['tree.survey'].create(values)
 
                             tree = self.env['product.template'].search(
                                 [('tree_survey_id', '=', response_text['_id'])], limit=1)
@@ -330,7 +351,9 @@ class ApiCallWizard(models.TransientModel):
                                     'name': response_text['tree_Id'],
                                     'type': 'product',
                                     'categ_id': categ.id,
-                                    'route_ids': [(6, 0, [route_id.id])]
+                                    'route_ids': [(6, 0, [route_id.id])],
+                                    'image_1920': '/' + phtoto_data_1,
+                                    'survey_id': new_tree_survey_obj.id,
                                 })
 
                                 product = tree.create(prod_val)
@@ -361,8 +384,17 @@ class ApiCallWizard(models.TransientModel):
         # Authentication
         access_token = ''
         url = 'https://earth.ff1.co.za/api/v1/User/signin'
-        email = 'planetodoo'
-        password = 'nG8#dDwes$B*WDP8qku2'
+        # email = 'planetodoo'
+        # password = 'nG8#dDwes$B*WDP8qku2'
+
+        cur_user = self.env.user
+
+        username = cur_user.api_user
+        password = cur_user.api_pwd
+
+        if not username or not password:
+            raise UserError(_("Please Enter API Credentials for your User."))
+
         header = {
             "Content-Type": "application/json"
         }
@@ -460,8 +492,17 @@ class ApiCallWizard(models.TransientModel):
         # Authentication
         access_token = ''
         url = 'https://earth.ff1.co.za/api/v1/User/signin'
-        email = 'planetodoo'
-        password = 'nG8#dDwes$B*WDP8qku2'
+        # email = 'planetodoo'
+        # password = 'nG8#dDwes$B*WDP8qku2'
+
+        cur_user = self.env.user
+
+        username = cur_user.api_user
+        password = cur_user.api_pwd
+
+        if not username or not password:
+            raise UserError(_("Please Enter API Credentials for your User."))
+
         header = {
             "Content-Type": "application/json"
         }

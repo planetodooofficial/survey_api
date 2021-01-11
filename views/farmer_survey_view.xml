@@ -111,6 +111,9 @@
                     <group>
                         <group name="Farmer's Info">
                             <field name="farmer_survey_id"/>
+
+                            <field name="survey_id"/>
+
                             <field name="epa"/>
                             <field name="farmer_age"/>
                             <field name="is_married"/>

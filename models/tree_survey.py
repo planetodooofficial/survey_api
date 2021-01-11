@@ -14,6 +14,9 @@ class inherit_product(models.Model):
 
     tree_name = fields.Char('Tree Name')
     tree_survey_id = fields.Char('Survey ID')
+
+    survey_id = fields.Many2one('tree.survey', string = 'Survey ID')
+
     farmer_name = fields.Many2one('res.partner', "Farmer's Name")
     farmer_id = fields.Char("Farmer's 180 ID")
     country_id = fields.Many2one('res.country', 'Country')
@@ -152,6 +155,9 @@ class tree_survey(models.Model):
     tree_survey_id = fields.Char('Survey ID')
     farmer_name = fields.Many2one('res.partner', "Farmer's Name")
     farmer_id = fields.Char("Farmer's 180 ID", required=False)
+
+    farmer_partner_id = fields.Many2one('res.partner', string='Farmer ID')
+
     country_id = fields.Many2one('res.country', 'Country')
     gps_location = fields.Char('Location')
     tree_type = fields.Char('Tree Type')
