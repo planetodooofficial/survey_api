@@ -43,7 +43,7 @@ class partner_inherit(models.Model):
     comments = fields.Text('Comments')
     special_info_farmer = fields.Text('Special information about farmer')
 
-    survey_id = fields.Many2one('farmer.survey', string='Survey ID')
+    # survey_id = fields.Many2one('farmer.survey', string='Survey ID')
 
     def get_farmer_survey_details(self):
 

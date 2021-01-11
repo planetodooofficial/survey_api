@@ -79,7 +79,7 @@
                         <group>
                             <field name="tree_survey_id"/>
 
-                            <field name="survey_id"/>
+<!--                            <field name="survey_id"/>-->
 
                             <field name="tree_name"/>
                             <field name="farmer_id"/>

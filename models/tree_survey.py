@@ -15,7 +15,7 @@ class inherit_product(models.Model):
     tree_name = fields.Char('Tree Name')
     tree_survey_id = fields.Char('Survey ID')
 
-    survey_id = fields.Many2one('tree.survey', string = 'Survey ID')
+    # survey_id = fields.Many2one('tree.survey', string = 'Survey ID')
 
     farmer_name = fields.Many2one('res.partner', "Farmer's Name")
     farmer_id = fields.Char("Farmer's 180 ID")
