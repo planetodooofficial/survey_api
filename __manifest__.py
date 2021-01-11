@@ -22,7 +22,7 @@
         'views/cook_stove_survey.xml',
         'views/water_well_survey.xml',
         'views/district_village_view.xml',
-        # 'views/res_users_inherit_view.xml',
+        'views/res_users_inherit_view.xml',
         'views/stock_picking_type_views.xml',
         'views/product_batch_split.xml',
         'views/configuration_view.xml',
