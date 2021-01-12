@@ -303,8 +303,8 @@ class ApiCallWizard(models.TransientModel):
                             photo_data_2 = str(response_text['image_of_tree_2'])
                             phtoto_data_2 = photo_data_2.strip('data:image/jpeg;base64,')
 
-                            photo_data_3 = str(response_text['image_of_tree_3'])
-                            phtoto_data_3 = photo_data_3.strip('data:image/jpeg;base64,')
+                            # photo_data_3 = str(response_text['image_of_tree_3'])
+                            # phtoto_data_3 = photo_data_3.strip('data:image/jpeg;base64,')
 
                             farmer = self.env['res.partner'].search(
                                 [('farmer_id', '=', str(response_text['180_farmer_Id']))])
@@ -322,7 +322,7 @@ class ApiCallWizard(models.TransientModel):
                                 'gps_location': response_text['GPS'],
                                 'tree_image_1': '/' + phtoto_data_1,
                                 'tree_image_2': '/' + phtoto_data_2,
-                                'tree_image_3': '/' + phtoto_data_3,
+                                # 'tree_image_3': '/' + phtoto_data_3,
                                 'survey_date': response_text['date_capture'],
                                 'tree_type': response_text['tree_type'][0],
                             })
