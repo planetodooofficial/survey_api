@@ -35,7 +35,7 @@
                     <group>
                         <group name="Farmer's Info">
                             <field name="farmer_survey_id"/>
-                            <field name="epa"/>
+<!--                            <field name="epa"/>-->
                             <field name="country_id"/>
                             <field name="district"/>
                             <field name="village"/>
@@ -62,8 +62,8 @@
                             <field name="efficient_cook_stove"/>
                             <field name="get_firewood_from"/>
                             <field name="hours_taken_per_week"/>
-                            <field name="comments"/>
-                            <field name="special_info_farmer"/>
+<!--                            <field name="comments"/>-->
+<!--                            <field name="special_info_farmer"/>-->
                         </group>
                     </group>
                     <group name="Images">
@@ -71,7 +71,7 @@
                         <field name="farmer_photo_2" widget="image"/>
                         <field name="farmer_photo_3" widget="image"/>
                         <field name="farmer_photo_4" widget="image"/>
-                        <field name="farmer_photo_5" widget="image"/>
+<!--                        <field name="farmer_photo_5" widget="image"/>-->
                     </group>
                 </sheet>
             </form>
@@ -112,9 +112,9 @@
                         <group name="Farmer's Info">
                             <field name="farmer_survey_id"/>
 
-<!--                            <field name="survey_id"/>-->
+                            <field name="survey_id"/>
 
-                            <field name="epa"/>
+<!--                            <field name="epa"/>-->
                             <field name="farmer_age"/>
                             <field name="is_married"/>
                             <field name="farmer_wife_name"/>
@@ -136,8 +136,8 @@
                             <field name="efficient_cook_stove"/>
                             <field name="get_firewood_from"/>
                             <field name="hours_taken_per_week"/>
-                            <field name="comments"/>
-                            <field name="special_info_farmer"/>
+<!--                            <field name="comments"/>-->
+<!--                            <field name="special_info_farmer"/>-->
                         </group>
                     </group>
                     <group name="Images">
@@ -145,7 +145,7 @@
                         <field name="farmer_photo_2" widget="image"/>
                         <field name="farmer_photo_3" widget="image"/>
                         <field name="farmer_photo_4" widget="image"/>
-                        <field name="farmer_photo_5" widget="image"/>
+<!--                        <field name="farmer_photo_5" widget="image"/>-->
                     </group>
                 </page>
             </xpath>

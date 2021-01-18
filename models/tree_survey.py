@@ -15,17 +15,18 @@ class inherit_product(models.Model):
     tree_name = fields.Char('Tree Name')
     tree_survey_id = fields.Char('Survey ID')
 
-    # survey_id = fields.Many2one('tree.survey', string = 'Survey ID')
+    farmer_partner_id = fields.Many2one('res.partner', string='Farmer')
+    survey_id = fields.Many2one('tree.survey', string='Tree Survey ID')
 
     farmer_name = fields.Many2one('res.partner', "Farmer's Name")
     farmer_id = fields.Char("Farmer's 180 ID")
     country_id = fields.Many2one('res.country', 'Country')
     gps_location = fields.Char('Location')
-    tree_type = fields.Char('Tree Type')
+    # tree_type = fields.Char('Tree Type')
     tree_image_1 = fields.Binary('Image 1', required=False)
     tree_image_2 = fields.Binary('Image 2', required=False)
-    tree_image_3 = fields.Binary('Image 3')
-    survey_date = fields.Char('Survey Date')
+    # tree_image_3 = fields.Binary('Image 3')
+    # survey_date = fields.Char('Survey Date')
 
 
 #     def get_trees_survey_details(self):
@@ -156,15 +157,15 @@ class tree_survey(models.Model):
     farmer_name = fields.Many2one('res.partner', "Farmer's Name")
     farmer_id = fields.Char("Farmer's 180 ID", required=False)
 
-    farmer_partner_id = fields.Many2one('res.partner', string='Farmer ID')
+    farmer_partner_id = fields.Many2one('res.partner', string='Farmer')
 
     country_id = fields.Many2one('res.country', 'Country')
     gps_location = fields.Char('Location')
-    tree_type = fields.Char('Tree Type')
+    # tree_type = fields.Char('Tree Type')
     tree_image_1 = fields.Binary('Image 1', required=False)
     tree_image_2 = fields.Binary('Image 2', required=False)
-    tree_image_3 = fields.Binary('Image 3')
-    survey_date = fields.Char('Survey Date')
+    # tree_image_3 = fields.Binary('Image 3')
+    # survey_date = fields.Char('Survey Date')
 
     # def get_trees_survey_details(self):
     #

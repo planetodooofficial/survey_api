@@ -18,7 +18,7 @@
             <tree string="Trees Survey">
                 <field name="tree_survey_id"/>
                 <field name="tree_name"/>
-                <field name="tree_type"/>
+<!--                <field name="tree_type"/>-->
                 <field name="country_id"/>
             </tree>
         </field>
@@ -42,16 +42,16 @@
                             <field name="farmer_partner_id"/>
 
                             <field name="country_id"/>
-                            <field name="tree_type"/>
+<!--                            <field name="tree_type"/>-->
                         </group>
                         <group>
                             <field name="gps_location"/>
-                            <field name="survey_date"/>
+<!--                            <field name="survey_date"/>-->
                         </group>
                         <group>
                             <field name="tree_image_1" widget="image"/>
                             <field name="tree_image_2" widget="image"/>
-                            <field name="tree_image_3" widget="image"/>
+<!--                            <field name="tree_image_3" widget="image"/>-->
                         </group>
                     </group>
                 </sheet>
@@ -77,23 +77,23 @@
                 <page string="Tree's Info" name="tree_info">
                     <group>
                         <group>
-                            <field name="tree_survey_id"/>
-
-<!--                            <field name="survey_id"/>-->
+<!--                            <field name="tree_survey_id"/>-->
+                            <field name="survey_id"/>
+                            <field name="farmer_partner_id"/>
 
                             <field name="tree_name"/>
                             <field name="farmer_id"/>
                             <field name="country_id"/>
-                            <field name="tree_type"/>
+<!--                            <field name="tree_type"/>-->
                         </group>
                         <group>
                             <field name="gps_location"/>
-                            <field name="survey_date"/>
+<!--                            <field name="survey_date"/>-->
                         </group>
                         <group>
                             <field name="tree_image_1" widget="image"/>
                             <field name="tree_image_2" widget="image"/>
-                            <field name="tree_image_3" widget="image"/>
+<!--                            <field name="tree_image_3" widget="image"/>-->
                         </group>
                     </group>
                 </page>
