@@ -214,7 +214,7 @@ class ApiCallWizard(models.TransientModel):
                             'name': farm['farmer_name'],
                             'country_id': country,
                             'image_1920': '/' + photo_data_1,
-                            # 'survey_id': farmer_obj_id.id,
+                            'survey_id': farmer_obj_id.id,
                         })
 
                         farmer = self.env['res.partner'].search([('farmer_survey_id', '=', 'farmer_survey_id')])

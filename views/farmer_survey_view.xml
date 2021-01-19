@@ -110,7 +110,7 @@
                 <page string="Farmer's Info" name="farmer_info" attrs="{'invisible':[('farmer_type', '=', False)]}">
                     <group>
                         <group name="Farmer's Info">
-                            <field name="farmer_survey_id"/>
+<!--                            <field name="farmer_survey_id"/>-->
 
                             <field name="survey_id"/>
 
