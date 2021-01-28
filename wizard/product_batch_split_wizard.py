@@ -57,10 +57,10 @@ class product_batch_split_wizard(models.TransientModel):
                 counter = 1
                 while int(start_counter) <= int(loop_counter):
                     values = {
-                        'name': 'MALAVI/Batch-Split-Product/' + str(counter),
+                        'name': 'MALAVI - Dedza' + str(product_product_id.name) + str(counter),
                         'sale_ok': True,
                         'type': 'product',
-                        'default_code': 'MALAVI/Batch-Split-Product' + str(counter),
+                        'default_code': 'MALAVI - Dedza' + str(product_product_id.name) + str(counter),
                     }
                     product_id = self.env['product.template'].sudo().create(values)
                     start_counter += 1
