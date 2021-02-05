@@ -370,17 +370,34 @@ class ApiCallWizard(models.TransientModel):
 
                             product = tree.create(prod_val)
 
-                            seller_val = {
+                            # seller_val = {
+                            #     'name': farmer.id or 10,
+                            #     'min_qty': 1,
+                            #     'product_uom': product.uom_id.id,
+                            #     'price': product.standard_price,
+                            #     'product_name': product.name,
+                            #     'product_id': self.env['product.product'].search(
+                            #         [('product_tmpl_id', '=', product.id)]).id,
+                            #     'product_tmpl_id': product.id,
+                            # }
+                            # farmer_supplier = self.env['product.supplierinfo'].create(seller_val)
+
+
+                            lst = []
+
+                            vals = (0, 0, {
                                 'name': farmer.id or 10,
                                 'min_qty': 1,
                                 'product_uom': product.uom_id.id,
                                 'price': product.standard_price,
                                 'product_name': product.name,
-                                'product_id': self.env['product.product'].search(
-                                    [('product_tmpl_id', '=', product.id)]).id,
                                 'product_tmpl_id': product.id,
-                            }
-                            farmer_supplier = self.env['product.supplierinfo'].create(seller_val)
+                            })
+
+                            lst.append(vals)
+
+                            product.write({'seller_ids': lst})
+
 
                             location = self.env['stock.location'].search([('name', '=', 'Stock')])
 
