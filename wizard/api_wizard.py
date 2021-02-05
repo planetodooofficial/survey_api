@@ -356,7 +356,7 @@ class ApiCallWizard(models.TransientModel):
 
                         if not tree:
                             prod_val.update({
-                                'farmer_name': farmer.id,
+                                'farmer_name': farmer.id or False,
                                 'farmer_id': farmer.farmer_id,
                                 'name': response_text['tree_name'][0],
                                 'type': 'product',
@@ -383,20 +383,20 @@ class ApiCallWizard(models.TransientModel):
                             # farmer_supplier = self.env['product.supplierinfo'].create(seller_val)
 
 
-                            lst = []
-
-                            vals = (0, 0, {
-                                'name': farmer.id or 10,
-                                'min_qty': 1,
-                                'product_uom': product.uom_id.id,
-                                'price': product.standard_price,
-                                'product_name': product.name,
-                                'product_tmpl_id': product.id,
-                            })
-
-                            lst.append(vals)
-
-                            product.write({'seller_ids': lst})
+                            # lst = []
+                            #
+                            # vals = (0, 0, {
+                            #     'name': farmer.id or False,
+                            #     'min_qty': 1,
+                            #     'product_uom': product.uom_id.id,
+                            #     'price': product.standard_price,
+                            #     'product_name': product.name,
+                            #     'product_tmpl_id': product.id,
+                            # })
+                            #
+                            # lst.append(vals)
+                            #
+                            # product.write({'seller_ids': lst})
 
 
                             location = self.env['stock.location'].search([('name', '=', 'Stock')])
