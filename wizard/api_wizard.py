@@ -195,17 +195,18 @@ class ApiCallWizard(models.TransientModel):
                         farmer_obj_id= self.env['farmer.survey'].create(values)
 
                         for name in farm['name_of_kid']:
-                            pos_tion = farm['name_of_kid'].index(name)
-                            age = farm['age_of_kid'][pos_tion]
-                            gender = farm['gender_of_kid'][pos_tion][0]
-                            # for age in response_text['d'][0]['age_of_kid']:
-                            #     for gender in response_text['d'][0]['gender_of_kid']:
-                            kids_objs = self.env['farmer.kids.details'].create({
-                                'farmer_kids_details_id': farmer_obj_id.id,
-                                'farmer_kid_name': name,
-                                'farmer_kid_age': age,
-                                'farmer_kid_gender': gender,
-                            })
+                            if name:
+                                pos_tion = farm['name_of_kid'].index(name)
+                                age = farm['age_of_kid'][pos_tion]
+                                gender = farm['gender_of_kid'][pos_tion][0]
+                                # for age in response_text['d'][0]['age_of_kid']:
+                                #     for gender in response_text['d'][0]['gender_of_kid']:
+                                kids_objs = self.env['farmer.kids.details'].create({
+                                    'farmer_kids_details_id': farmer_obj_id.id,
+                                    'farmer_kid_name': name,
+                                    'farmer_kid_age': age,
+                                    'farmer_kid_gender': gender,
+                                })
 
                         values.update({
                             'company_type': 'person',
@@ -341,7 +342,7 @@ class ApiCallWizard(models.TransientModel):
 
                         tree = self.env['product.template'].search(
                             [('tree_survey_id', '=', response_text['_id'])], limit=1)
-                        route_id = self.env['stock.location.route'].search([('name', '=', 'Dropship')])
+                        route_id = self.env['stock.location.route'].search([('name', '=', 'Buy')])
 
                         categ = self.env['product.category'].search(
                             ['|', ('name', '=', farmer.country_id.name), ('name', '=', 'Malawi')])
@@ -381,7 +382,18 @@ class ApiCallWizard(models.TransientModel):
                             }
                             farmer_supplier = self.env['product.supplierinfo'].create(seller_val)
 
+                            location = self.env['stock.location'].search([('name', '=', 'Stock')])
+
+
+
                             self.env.cr.commit()
+
+                            # self.env['stock.quant'].with_context(inventory_mode=True).create({
+                            #     'product_id': product.id,
+                            #     'location_id': location.id,
+                            #     'lot_id': False,
+                            #     'inventory_quantity': 1,
+                            # })
             else:
                 raise ValidationError(_("There's something wrong! Please check your request again."))
         return True
