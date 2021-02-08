@@ -288,7 +288,7 @@ class ApiCallWizard(models.TransientModel):
                     "SNId": str(body_survey.snid),
                     "SId": str(sid)
                 },
-                "_page": {"per": 10, "page": 1}
+                "_page": {"per": 10, "page": 2}
 
             }
             response = requests.post(data_url, data=json.dumps(body_data), headers=header)
@@ -296,123 +296,166 @@ class ApiCallWizard(models.TransientModel):
             if response.status_code == 200:
                 response_text = json.loads(response.text)
                 print("Second API Call")
-                values = {}
-                prod_val = {}
-                categ = ''
 
-                for response_text in response_text['d']:
-                    survey_id = str(response_text['_id'])
-                    # print(response_text['image_of_tree_1'])
-                    survey = self.env['tree.survey'].search([('tree_survey_id', '=', survey_id)])
-                    # if not survey_id == '5f1296be5d082f5b6e04f65f':
-                    if not survey:
-                        photo_data_1 = str(response_text['image_of_tree_1'])
-                        phtoto_data_1 = photo_data_1.strip('data:image/jpeg;base64,')
+                page_count = response_text['Count']
 
-                        photo_data_2 = str(response_text['image_of_tree_2'])
-                        phtoto_data_2 = photo_data_2.strip('data:image/jpeg;base64,')
+                self.get_tree_data(body_survey.pid, body_survey.snid, sid, page_count)
 
-                        # photo_data_3 = str(response_text['image_of_tree_3'])
-                        # phtoto_data_3 = photo_data_3.strip('data:image/jpeg;base64,')
 
-                        farmer = self.env['res.partner'].search(
-                            [('farmer_id', '=', str(response_text['180_farmer_Id']))])
 
-                        if not farmer:
-                            farmer.get_farmer_survey_details()
+    def get_tree_data(self, pid, snid, sid, page_count):
+
+        cur_user = self.env.user
+
+        username = cur_user.api_user
+        password = cur_user.api_pwd
+
+        header = {
+            "Content-Type": "application/json",
+            "username": username,
+            "password": password
+
+        }
+
+        body_survey = self.env['config.survey'].search([])
+
+        if sid:
+            for count in range (1, page_count):
+                data_url = 'http://dms.agrotechltd.org/api/survey-data/search-data'
+
+                body_data = {
+                    "_ids": {
+                        "PId": str(body_survey.pid),
+                        "SNId": str(body_survey.snid),
+                        "SId": str(sid)
+                    },
+                    "_page": {"per": 10, "page": count}
+
+                }
+                response = requests.post(data_url, data=json.dumps(body_data), headers=header)
+
+                if response.status_code == 200:
+                    response_text = json.loads(response.text)
+                    print("Second API Call")
+
+
+                    values = {}
+                    prod_val = {}
+                    categ = ''
+
+                    for response_text in response_text['d']:
+                        survey_id = str(response_text['_id'])
+                        # print(response_text['image_of_tree_1'])
+                        survey = self.env['tree.survey'].search([('tree_survey_id', '=', survey_id)])
+                        # if not survey_id == '5f1296be5d082f5b6e04f65f':
+                        if not survey:
+                            photo_data_1 = str(response_text['image_of_tree_1'])
+                            phtoto_data_1 = photo_data_1.strip('data:image/jpeg;base64,')
+
+                            photo_data_2 = str(response_text['image_of_tree_2'])
+                            phtoto_data_2 = photo_data_2.strip('data:image/jpeg;base64,')
+
+                            # photo_data_3 = str(response_text['image_of_tree_3'])
+                            # phtoto_data_3 = photo_data_3.strip('data:image/jpeg;base64,')
+
                             farmer = self.env['res.partner'].search(
                                 [('farmer_id', '=', str(response_text['180_farmer_Id']))])
 
-                        values.update({
-                            'tree_name': response_text['tree_name'][0],
-                            'tree_survey_id': response_text['_id'],  # Survey ID
-                            'farmer_id': response_text['180_farmer_Id'],
-                            'farmer_partner_id': farmer.id,
-                            'country_id': farmer.country_id.id,
-                            'gps_location': response_text['GPS'],
-                            'tree_image_1': '/' + phtoto_data_1,
-                            'tree_image_2': '/' + phtoto_data_2,
-                            # 'tree_image_3': '/' + phtoto_data_3,
-                            # 'survey_date': response_text['date_capture'],
-                            # 'tree_type': response_text['tree_type'][0],
-                        })
+                            if not farmer:
+                                farmer.get_farmer_survey_details()
+                                farmer = self.env['res.partner'].search(
+                                    [('farmer_id', '=', str(response_text['180_farmer_Id']))])
 
-                        # self.write(values)
-                        new_tree_survey_obj = self.env['tree.survey'].create(values)
-
-                        tree = self.env['product.template'].search(
-                            [('tree_survey_id', '=', response_text['_id'])], limit=1)
-                        route_id = self.env['stock.location.route'].search([('name', '=', 'Buy')])
-
-                        categ = self.env['product.category'].search(
-                            ['|', ('name', '=', farmer.country_id.name), ('name', '=', 'Malawi')])
-                        if not categ:
-                            val_categ = {}
-                            val_categ.update({
-                                'name': farmer.country_id.name or 'Malawi',
-                                'route_ids': [(6, 0, [route_id.id])]
-                            })
-                            categ = categ.create(val_categ)
-
-                        if not tree:
-                            prod_val.update({
-                                'farmer_name': farmer.id or False,
-                                'farmer_id': farmer.farmer_id,
-                                'name': response_text['tree_name'][0],
-                                'type': 'product',
-                                'categ_id': categ.id,
-                                'route_ids': [(6, 0, [route_id.id])],
-                                'image_1920': '/' + phtoto_data_1,
-                                'survey_id': new_tree_survey_obj.id,
+                            values.update({
+                                'tree_name': response_text['tree_name'][0],
+                                'tree_survey_id': response_text['_id'],  # Survey ID
+                                'farmer_id': response_text['180_farmer_Id'],
+                                'farmer_partner_id': farmer.id,
+                                'country_id': farmer.country_id.id,
+                                'gps_location': response_text['GPS'],
+                                'tree_image_1': '/' + phtoto_data_1,
+                                'tree_image_2': '/' + phtoto_data_2,
+                                # 'tree_image_3': '/' + phtoto_data_3,
+                                # 'survey_date': response_text['date_capture'],
+                                # 'tree_type': response_text['tree_type'][0],
                             })
 
-                            prod_val.update(values)
+                            # self.write(values)
+                            new_tree_survey_obj = self.env['tree.survey'].create(values)
 
-                            product = tree.create(prod_val)
+                            tree = self.env['product.template'].search(
+                                [('tree_survey_id', '=', response_text['_id'])], limit=1)
+                            route_id = self.env['stock.location.route'].search([('name', '=', 'Buy')])
 
-                            # seller_val = {
-                            #     'name': farmer.id or 10,
-                            #     'min_qty': 1,
-                            #     'product_uom': product.uom_id.id,
-                            #     'price': product.standard_price,
-                            #     'product_name': product.name,
-                            #     'product_id': self.env['product.product'].search(
-                            #         [('product_tmpl_id', '=', product.id)]).id,
-                            #     'product_tmpl_id': product.id,
-                            # }
-                            # farmer_supplier = self.env['product.supplierinfo'].create(seller_val)
+                            categ = self.env['product.category'].search(
+                                ['|', ('name', '=', farmer.country_id.name), ('name', '=', 'Malawi')])
+                            if not categ:
+                                val_categ = {}
+                                val_categ.update({
+                                    'name': farmer.country_id.name or 'Malawi',
+                                    'route_ids': [(6, 0, [route_id.id])]
+                                })
+                                categ = categ.create(val_categ)
+
+                            if not tree:
+                                prod_val.update({
+                                    'farmer_name': farmer.id or False,
+                                    'farmer_id': farmer.farmer_id,
+                                    'name': response_text['tree_name'][0],
+                                    'type': 'product',
+                                    'categ_id': categ.id,
+                                    'route_ids': [(6, 0, [route_id.id])],
+                                    'image_1920': '/' + phtoto_data_1,
+                                    'survey_id': new_tree_survey_obj.id,
+                                })
+
+                                prod_val.update(values)
+
+                                product = tree.create(prod_val)
+
+                                # seller_val = {
+                                #     'name': farmer.id or 10,
+                                #     'min_qty': 1,
+                                #     'product_uom': product.uom_id.id,
+                                #     'price': product.standard_price,
+                                #     'product_name': product.name,
+                                #     'product_id': self.env['product.product'].search(
+                                #         [('product_tmpl_id', '=', product.id)]).id,
+                                #     'product_tmpl_id': product.id,
+                                # }
+                                # farmer_supplier = self.env['product.supplierinfo'].create(seller_val)
 
 
-                            # lst = []
-                            #
-                            # vals = (0, 0, {
-                            #     'name': farmer.id or False,
-                            #     'min_qty': 1,
-                            #     'product_uom': product.uom_id.id,
-                            #     'price': product.standard_price,
-                            #     'product_name': product.name,
-                            #     'product_tmpl_id': product.id,
-                            # })
-                            #
-                            # lst.append(vals)
-                            #
-                            # product.write({'seller_ids': lst})
+                                # lst = []
+                                #
+                                # vals = (0, 0, {
+                                #     'name': farmer.id or False,
+                                #     'min_qty': 1,
+                                #     'product_uom': product.uom_id.id,
+                                #     'price': product.standard_price,
+                                #     'product_name': product.name,
+                                #     'product_tmpl_id': product.id,
+                                # })
+                                #
+                                # lst.append(vals)
+                                #
+                                # product.write({'seller_ids': lst})
 
 
-                            location = self.env['stock.location'].search([('name', '=', 'Stock')])
+                                location = self.env['stock.location'].search([('name', '=', 'Stock')])
 
 
 
-                            self.env.cr.commit()
+                                self.env.cr.commit()
 
-                            # self.env['stock.quant'].with_context(inventory_mode=True).create({
-                            #     'product_id': product.id,
-                            #     'location_id': location.id,
-                            #     'lot_id': False,
-                            #     'inventory_quantity': 1,
-                            # })
-            else:
-                raise ValidationError(_("There's something wrong! Please check your request again."))
+                                # self.env['stock.quant'].with_context(inventory_mode=True).create({
+                                #     'product_id': product.id,
+                                #     'location_id': location.id,
+                                #     'lot_id': False,
+                                #     'inventory_quantity': 1,
+                                # })
+        else:
+            raise ValidationError(_("There's something wrong! Please check your request again."))
         return True
 
 
