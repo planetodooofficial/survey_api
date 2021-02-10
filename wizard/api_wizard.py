@@ -82,6 +82,49 @@ class ApiCallWizard(models.TransientModel):
 
             if response.status_code == 200:
                 response_text = json.loads(response.text)
+
+                page_count = response_text['Total']
+
+                self.get_farmer_data(body_survey.pid, body_survey.snid, sid, page_count)
+
+
+
+    def get_farmer_data(self, pid, snid, sid, page_count):
+
+        cur_user = self.env.user
+
+        username = cur_user.api_user
+        password = cur_user.api_pwd
+
+        header = {
+            "Content-Type": "application/json",
+            "username": username,
+            "password": password
+
+        }
+
+        body_survey = self.env['config.survey'].search([])
+
+        if sid:
+            for count in range (1, page_count):
+                data_url = 'http://dms.agrotechltd.org/api/survey-data/search-data'
+
+                body_data = {
+                    "_ids": {
+                        "PId": str(body_survey.pid),
+                        "SNId": str(body_survey.snid),
+                        "SId": str(sid)
+                    },
+                    "_page": {"per": 10, "page": count}
+
+                }
+                response = requests.post(data_url, data=json.dumps(body_data), headers=header)
+
+                if response.status_code == 200:
+                    response_text = json.loads(response.text)
+
+
+
                 for farm in response_text['d']:
                     values = {}
                     children_list = []
@@ -225,6 +268,7 @@ class ApiCallWizard(models.TransientModel):
                             no_kids.write({'farmer_kids_details_res_partner_id': part_id})
                     # else:
                     #     raise ValidationError(_("No new records to Import"))
+
 
 
 
