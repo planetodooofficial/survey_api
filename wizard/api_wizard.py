@@ -192,7 +192,7 @@ class ApiCallWizard(models.TransientModel):
 
                             'farmer_national_id': farm['national_ID'],
                             'farmer_age': int(farm['age_of_farmer']),
-                            'farmer_children': int(farm['number_of_kids']),
+                            'farmer_children': int(farm['number_of_kids']) if farm['number_of_kids'] else '',
                             'no_of_kids_ids': children_list,  # F17 - F19
                             'farmer_farming_list': list_of_trees,  # F20
 
