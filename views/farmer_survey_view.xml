@@ -41,6 +41,13 @@
                             <field name="village"/>
                             <field name="farmer_name"/>
                             <field name="farmer_age"/>
+
+                            <field name="farmer_gender"/>
+                            <field name="farmer_wife_name" attrs="{'invisible': [('farmer_gender', '=', 'Female')]}"/>
+                            <field name="farmer_wife_age" attrs="{'invisible': [('farmer_gender', '=', 'Female')]}"/>
+                            <field name="farmer_husband_name"  attrs="{'invisible': [('farmer_gender', '=', 'Male')]}"/>
+                            <field name="farmer_husband_age" attrs="{'invisible': [('farmer_gender', '=', 'Male')]}"/>
+
                             <field name="is_married"/>
                             <field name="farmer_wife_name"/>
                             <field name="farmer_wife_age"/>
@@ -116,6 +123,13 @@
 
 <!--                            <field name="epa"/>-->
                             <field name="farmer_age"/>
+
+                            <field name="farmer_gender"/>
+                            <field name="farmer_wife_name" attrs="{'invisible': [('farmer_gender', '=', 'Female')]}"/>
+                            <field name="farmer_wife_age" attrs="{'invisible': [('farmer_gender', '=', 'Female')]}"/>
+                            <field name="farmer_husband_name"  attrs="{'invisible': [('farmer_gender', '=', 'Male')]}"/>
+                            <field name="farmer_husband_age" attrs="{'invisible': [('farmer_gender', '=', 'Male')]}"/>
+
                             <field name="is_married"/>
                             <field name="farmer_wife_name"/>
                             <field name="farmer_wife_age"/>

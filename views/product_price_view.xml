@@ -1,0 +1,50 @@
+<odoo>
+
+    <!-- Tree Survey   -->
+
+    <record id="product_price_action_id" model="ir.actions.act_window">
+        <field name="name">Product Price</field>
+        <field name="res_model">product.prices</field>
+        <field name="view_mode">tree,form</field>
+        <field name="help" type="html">
+            <p class="oe_view_nocontent_create">Product Price</p>
+        </field>
+    </record>
+
+    <record id="product_price_tree_view_id" model="ir.ui.view">
+        <field name="name">Product Price Tree View</field>
+        <field name="model">product.prices</field>
+        <field name="arch" type="xml">
+            <tree string="Trees Survey">
+                <field name="name"/>
+                <field name="price"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="product_price_form_view_id" model="ir.ui.view">
+        <field name="name">Product Price Form View</field>
+        <field name="model">product.prices</field>
+        <field name="arch" type="xml">
+            <form string="Product Price">
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="name"/>
+                            <field name="price"/>
+
+                        </group>
+
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <menuitem id="product_price_id"
+              parent="stock.menu_product_in_config_stock"
+              name="Product Price"
+              groups="base.group_user"
+              action="product_price_action_id"/>
+
+</odoo>

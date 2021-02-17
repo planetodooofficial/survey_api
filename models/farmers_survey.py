@@ -19,6 +19,15 @@ class partner_inherit(models.Model):
     # epa = fields.Char('EPA')
     village = fields.Many2one('res.district.village', 'Village', required=False)
     farmer_name = fields.Char("Farmer's Name (First Name and Surname)", required=False)
+
+    farmer_gender = fields.Selection([('Female', 'Female'), ('Male', 'Male')])
+
+    farmer_wife_name = fields.Char("Wife's Name")
+    farmer_husband_name = fields.Char("Husband's Name")
+
+    farmer_wife_age = fields.Integer("Wife's Age")
+    farmer_husband_age = fields.Integer("Husband's Age")
+
     farmer_id = fields.Char("Farmer's 180 ID")
     farmer_photo_1 = fields.Binary("Farmer's Photo 1 (Whole body in front of hut)", required=False)
     farmer_photo_2 = fields.Binary("Farmer's Photo 2 (Whole body in front of hut)", required=False)
@@ -28,8 +37,6 @@ class partner_inherit(models.Model):
     farmer_national_id = fields.Char("Farmer's National ID")
     farmer_age = fields.Integer("Farmer's Age")
     is_married = fields.Selection([('Yes', 'Yes'), ('No', 'No')], string='Married')
-    farmer_wife_name = fields.Char("Wife's Name")
-    farmer_wife_age = fields.Integer("Wife's Age")
     farmer_children = fields.Integer("No. Of Children")
     no_of_kids_ids = fields.One2many('farmer.kids.details', 'farmer_kids_details_res_partner_id', string="No. Of Kids")
     farmer_farming_list = fields.Char('What is the farmer farming on his fields? ')
@@ -268,6 +275,15 @@ class farmer_survey(models.Model):
     village = fields.Many2one('res.district.village', required=False)
     country_id = fields.Many2one('res.country', "Country")
     farmer_name = fields.Char("Farmer's Name (First Name and Surname)", required=False)
+
+    farmer_gender = fields.Selection([('Female', 'Female'), ('Male', 'Male')])
+
+    farmer_wife_name = fields.Char("Wife's Name")
+    farmer_husband_name = fields.Char("Husband's Name")
+
+    farmer_wife_age = fields.Integer("Wife's Age")
+    farmer_husband_age = fields.Integer("Husband's Age")
+
     farmer_id = fields.Char("Farmer's 180 ID")
     farmer_photo_1 = fields.Binary("Farmer's Photo 1 (Whole body in front of hut)", required=False)
     farmer_photo_2 = fields.Binary("Farmer's Photo 2 (Whole body in front of hut)", required=False)

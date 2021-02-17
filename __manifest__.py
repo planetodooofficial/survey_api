@@ -26,6 +26,7 @@
         'views/stock_picking_type_views.xml',
         'views/product_batch_split.xml',
         'views/configuration_view.xml',
+        'views/product_price_view.xml',
     ],
     'installable': True,
     'auto_install': False,

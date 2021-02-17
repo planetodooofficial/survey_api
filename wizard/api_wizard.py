@@ -170,23 +170,28 @@ class ApiCallWizard(models.TransientModel):
                         country = self.env['res.country'].search([('name', '=', farm['country'][0])]).id
 
                         wife_age = farm['wife_age']
+                        husband_age = farm['husband_age']
 
                         values.update({
                             'farmer_survey_id': farm['_id'],  # Survey ID
                             'district': district.id,
                             'village': village.id,
                             'country_id': country,
-                            'farmer_name': farm['farmer_name'],
+                            'farmer_name': farm['farmer_name'] +' '+ farm['farmer_last_name'],
                             'farmer_id': farm['180_farmer_Id'],
                             'farmer_photo_1': '/' + photo_data_1,  # F6
                             'farmer_photo_2': '/' + photo_data_2,  # F7
                             'farmer_photo_3': '/' + photo_data_3,  # F8
                             'farmer_photo_4': '/' + photo_data_4,  # F9
 
-                            'farmer_national_id': farm['national_ID'],
-                            'farmer_age': int(farm['age_of_farmer']),
+                            'farmer_gender': farm['farmer_gender'][0],
                             'farmer_wife_name': farm['wife_name'],
                             'farmer_wife_age': wife_age if wife_age else 0,
+                            'farmer_husband_name': farm['husband_first_name'],
+                            'farmer_husband_age': husband_age if husband_age else 0,
+
+                            'farmer_national_id': farm['national_ID'],
+                            'farmer_age': int(farm['age_of_farmer']),
                             'farmer_children': int(farm['number_of_kids']),
                             'no_of_kids_ids': children_list,  # F17 - F19
                             'farmer_farming_list': list_of_trees,  # F20
@@ -200,7 +205,7 @@ class ApiCallWizard(models.TransientModel):
                         })
 
                         #  F13 Value (Is Married?)
-                        if farm['married'][0] == 'Yes':
+                        if farm['marital_status'][0] == 'Married':
                             values.update({'is_married': 'Yes'})
                         else:
                             values.update({'is_married': 'No'})
@@ -332,7 +337,7 @@ class ApiCallWizard(models.TransientModel):
                     "SNId": str(body_survey.snid),
                     "SId": str(sid)
                 },
-                "_page": {"per": 10, "page": 2}
+                "_page": {"per": 10, "page": 1}
 
             }
             response = requests.post(data_url, data=json.dumps(body_data), headers=header)
@@ -404,6 +409,10 @@ class ApiCallWizard(models.TransientModel):
 
                             farmer = self.env['res.partner'].search(
                                 [('farmer_id', '=', str(response_text['180_farmer_Id']))])
+
+                            loc = response_text['GPS']
+
+                            location = ",".join([str(i) for i in loc])
 
                             if not farmer:
                                 farmer.get_farmer_survey_details()
