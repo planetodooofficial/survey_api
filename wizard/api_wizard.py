@@ -242,19 +242,20 @@ class ApiCallWizard(models.TransientModel):
                         # self.update(values)
                         farmer_obj_id= self.env['farmer.survey'].create(values)
 
-                        for name in farm['name_of_kid']:
-                            if name:
-                                pos_tion = farm['name_of_kid'].index(name)
-                                age = farm['age_of_kid'][pos_tion]
-                                gender = farm['gender_of_kid'][pos_tion][0]
-                                # for age in response_text['d'][0]['age_of_kid']:
-                                #     for gender in response_text['d'][0]['gender_of_kid']:
-                                kids_objs = self.env['farmer.kids.details'].create({
-                                    'farmer_kids_details_id': farmer_obj_id.id,
-                                    'farmer_kid_name': name,
-                                    'farmer_kid_age': age,
-                                    'farmer_kid_gender': gender,
-                                })
+                        if farm['name_of_kid']:
+                            for name in farm['name_of_kid']:
+                                if name:
+                                    pos_tion = farm['name_of_kid'].index(name)
+                                    age = farm['age_of_kid'][pos_tion]
+                                    gender = farm['gender_of_kid'][pos_tion][0]
+                                    # for age in response_text['d'][0]['age_of_kid']:
+                                    #     for gender in response_text['d'][0]['gender_of_kid']:
+                                    kids_objs = self.env['farmer.kids.details'].create({
+                                        'farmer_kids_details_id': farmer_obj_id.id,
+                                        'farmer_kid_name': name,
+                                        'farmer_kid_age': age,
+                                        'farmer_kid_gender': gender,
+                                    })
 
                         values.update({
                             'company_type': 'person',
