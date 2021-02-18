@@ -456,6 +456,9 @@ class ApiCallWizard(models.TransientModel):
                                 })
                                 categ = categ.create(val_categ)
 
+                            tree_name = response_text['tree_name'][0]
+                            tree_price_obj = self.env['product.prices'].search({('name', '=', tree_name)})
+
                             if not tree:
                                 prod_val.update({
                                     'farmer_name': farmer.id or False,
@@ -463,6 +466,7 @@ class ApiCallWizard(models.TransientModel):
                                     'name': response_text['tree_name'][0],
                                     'type': 'product',
                                     'categ_id': categ.id,
+                                    'list_price': tree_price_obj.price,
                                     'route_ids': [(6, 0, [route_id.id])],
                                     'image_1920': '/' + phtoto_data_1,
                                     'survey_id': new_tree_survey_obj.id,

@@ -108,6 +108,7 @@ class partner_inherit(models.Model):
                 sid = dict_item['_id']
         print(sid)
 
+
         if sid:
             data_url = 'http://dms.agrotechltd.org/api/survey-data/search-data'
 
@@ -124,145 +125,207 @@ class partner_inherit(models.Model):
 
             if response.status_code == 200:
                 response_text = json.loads(response.text)
-                for farm in response_text['d']:
-                    values = {}
-                    children_list = []
-                    survey_id = str(farm['_id'])
-                    survey = self.env['farmer.survey'].search([('farmer_survey_id', '=', survey_id)])
-                    if not survey:
-                        # F1 Value
-                        district_values = {
-                            # 'district_name': response_text['d'][0]['district'][0]
-                            'district_name': farm['district'][0]
-                        }
 
-                        district = self.env['res.district'].create(district_values)
+                page_count = response_text['Total']
 
-                        # F3 Value
-                        village_values = {
-                            'district_name': district.id,
-                            'village_name': farm['location'][0]
-                        }
+                self.get_farmer_data(body_survey.pid, body_survey.snid, sid, page_count)
 
-                        village = self.env['res.district.village'].create(village_values)
 
-                        p_data_1 = str(farm['farmer_photo_1'])
-                        photo_data_1 = p_data_1.strip('data:image/jpeg;base64,')
 
-                        p_data_2 = str(farm['farmer_photo_2'])
-                        photo_data_2 = p_data_2.strip('data:image/jpeg;base64,')
+    def get_farmer_data(self, pid, snid, sid, page_count):
 
-                        p_data_3 = str(farm['farmer_photo_3_family'])
-                        photo_data_3 = p_data_3.strip('data:image/jpeg;base64,')
+        cur_user = self.env.user
 
-                        p_data_4 = str(farm['farmer_photo_4_family'])
-                        photo_data_4 = p_data_4.strip('data:image/jpeg;base64,')
+        username = cur_user.api_user
+        password = cur_user.api_pwd
 
-                        # F20 Value (What is the farmer farming on his fields?)
+        header = {
+            "Content-Type": "application/json",
+            "username": username,
+            "password": password
 
-                        list_of_trees = ''
-                        for tree in farm['farming_on_fields']:
-                            list_of_trees += tree + ','
+        }
 
-                        country = self.env['res.country'].search([('name', '=', farm['country'][0])]).id
+        body_survey = self.env['config.survey'].search([])
 
-                        wife_age = farm['wife_age']
+        flag = True
 
-                        values.update({
-                            'farmer_survey_id': farm['_id'],  # Survey ID
-                            'district': district.id,
-                            'village': village.id,
-                            'country_id': country,
-                            'farmer_name': farm['farmer_name'],
-                            'farmer_id': farm['180_farmer_Id'],
-                            'farmer_photo_1': '/' + photo_data_1,  # F6
-                            'farmer_photo_2': '/' + photo_data_2,  # F7
-                            'farmer_photo_3': '/' + photo_data_3,  # F8
-                            'farmer_photo_4': '/' + photo_data_4,  # F9
+        if sid:
+            while (flag == True):
+                for count in range (1, page_count):
+                    data_url = 'http://dms.agrotechltd.org/api/survey-data/search-data'
 
-                            'farmer_national_id': farm['national_ID'],
-                            'farmer_age': int(farm['age_of_farmer']),
-                            'farmer_wife_name': farm['wife_name'],
-                            'farmer_wife_age': wife_age if wife_age else 0,
-                            'farmer_children': int(farm['number_of_kids']),
-                            'no_of_kids_ids': children_list,  # F17 - F19
-                            'farmer_farming_list': list_of_trees,  # F20
+                    body_data = {
+                        "_ids": {
+                            "PId": str(body_survey.pid),
+                            "SNId": str(body_survey.snid),
+                            "SId": str(sid)
+                        },
+                        "_page": {"per": 10, "page": count}
 
-                            'farmer_grow_fruit_trees': farm['farmer_grow_fruit_trees'],  # F22
-                            'no_of_tres_for_planting': int(farm['trees_farmer_would_like_plant']),
-                            'get_firewood_from': farm['source_of_firewood'],
-                            'hours_taken_per_week': float(farm['hours_per_week']),
+                    }
+                    response = requests.post(data_url, data=json.dumps(body_data), headers=header)
 
-                            # 'comments': answer_response_text['d'][0]['F27'],
-                        })
+                    if response.status_code == 200:
+                        response_text = json.loads(response.text)
 
-                        #  F13 Value (Is Married?)
-                        if farm['married'][0] == 'Yes':
-                            values.update({'is_married': 'Yes'})
-                        else:
-                            values.update({'is_married': 'No'})
+                    if not response_text['d']:
+                        flag = False
+                        break
 
-                        # F17 - F19 Values (No. Of Children)
+                    for farm in response_text['d']:
+                        values = {}
+                        children_list = []
+                        survey_id = str(farm['_id'])
+                        survey = self.env['farmer.survey'].search([('farmer_survey_id', '=', survey_id)])
+                        if not survey:
+                            # F1 Value
+                            district_values = {
+                                # 'district_name': response_text['d'][0]['district'][0]
+                                'district_name': farm['district'][0]
+                            }
 
-                        # if response_text['d'][0]['married'][0] == 'Yes':
-                        #     for name in response_text['d'][0]['name_of_kid']:
-                        #         pos_tion = response_text['d'][0]['name_of_kid'].index(name)
-                        #         age = response_text['d'][0]['age_of_kid'][pos_tion]
-                        #         gender = response_text['d'][0]['gender_of_kid'][pos_tion][0]
-                        #         # for age in response_text['d'][0]['age_of_kid']:
-                        #         #     for gender in response_text['d'][0]['gender_of_kid']:
-                        #         kids_objs = self.env['farmer.kids.details'].create({
-                        #             'farmer_kids_details_id': self.id,
-                        #             'farmer_kid_name': name,
-                        #             'farmer_kid_age': age,
-                        #             'farmer_kid_gender': gender,
-                        #         })
+                            district = self.env['res.district'].create(district_values)
 
-                        # F21 Value (Does the farmer grow fruit trees?)
+                            # F3 Value
+                            village_values = {
+                                'district_name': district.id,
+                                'village_name': farm['location'][0]
+                            }
 
-                        if farm['farmer_grow_fruit_trees'][0] == 'Yes':
-                            values.update({'farmer_fruit_trees': 'Yes'})
-                        else:
-                            values.update({'farmer_fruit_trees': 'No'})
+                            village = self.env['res.district.village'].create(village_values)
 
-                        # F24 Value (Does he have an energy efficient cook-stove?)
-                        if farm['have_energy_efficient_cookstove'][0] == 'Yes':
-                            values.update({'efficient_cook_stove': 'Yes'})
-                        else:
-                            values.update({'efficient_cook_stove': 'No'})
+                            p_data_1 = str(farm['farmer_photo_1'])
+                            photo_data_1 = p_data_1.strip('data:image/jpeg;base64,')
 
-                        # self.update(values)
-                        farmer_obj_id = self.env['farmer.survey'].create(values)
+                            p_data_2 = str(farm['farmer_photo_2'])
+                            photo_data_2 = p_data_2.strip('data:image/jpeg;base64,')
 
-                        for name in farm['name_of_kid']:
-                            pos_tion = farm['name_of_kid'].index(name)
-                            age = farm['age_of_kid'][pos_tion]
-                            gender = farm['gender_of_kid'][pos_tion][0]
-                            # for age in response_text['d'][0]['age_of_kid']:
-                            #     for gender in response_text['d'][0]['gender_of_kid']:
-                            kids_objs = self.env['farmer.kids.details'].create({
-                                'farmer_kids_details_id': farmer_obj_id.id,
-                                'farmer_kid_name': name,
-                                'farmer_kid_age': age,
-                                'farmer_kid_gender': gender,
+                            p_data_3 = str(farm['farmer_photo_3_family'])
+                            photo_data_3 = p_data_3.strip('data:image/jpeg;base64,')
+
+                            p_data_4 = str(farm['farmer_photo_4_family'])
+                            photo_data_4 = p_data_4.strip('data:image/jpeg;base64,')
+
+
+                            # F20 Value (What is the farmer farming on his fields?)
+
+                            list_of_trees = ''
+                            for tree  in farm['farming_on_fields']:
+                                list_of_trees += tree +','
+
+
+                            country = self.env['res.country'].search([('name', '=', farm['country'][0])]).id
+
+                            wife_age = farm['wife_age']
+                            husband_age = farm['husband_age']
+
+                            values.update({
+                                'farmer_survey_id': farm['_id'],  # Survey ID
+                                'district': district.id,
+                                'village': village.id,
+                                'country_id': country,
+                                'farmer_name': farm['farmer_name'] +' '+ farm['farmer_last_name'],
+                                'farmer_id': farm['180_farmer_Id'],
+                                'farmer_photo_1': '/' + photo_data_1,  # F6
+                                'farmer_photo_2': '/' + photo_data_2,  # F7
+                                'farmer_photo_3': '/' + photo_data_3,  # F8
+                                'farmer_photo_4': '/' + photo_data_4,  # F9
+
+                                'farmer_gender': farm['farmer_gender'][0],
+                                'farmer_wife_name': farm['wife_name'],
+                                'farmer_wife_age': wife_age if wife_age else 0,
+                                'farmer_husband_name': farm['husband_first_name'],
+                                'farmer_husband_age': husband_age if husband_age else 0,
+
+                                'farmer_national_id': farm['national_ID'],
+                                'farmer_age': int(farm['age_of_farmer']),
+                                'farmer_children': int(farm['number_of_kids']) if farm['number_of_kids'] else '',
+                                'no_of_kids_ids': children_list,  # F17 - F19
+                                'farmer_farming_list': list_of_trees,  # F20
+
+                                'farmer_grow_fruit_trees': farm['farmer_grow_fruit_trees'],  # F22
+                                'no_of_tres_for_planting': int(farm['trees_farmer_would_like_plant']),
+                                'get_firewood_from': farm['source_of_firewood'],
+                                'hours_taken_per_week': float(farm['hours_per_week']),
+
+                                # 'comments': answer_response_text['d'][0]['F27'],
                             })
 
-                        values.update({
-                            'company_type': 'person',
-                            'farmer_type': True,
-                            'type': '',
-                            'name': farm['farmer_name'],
-                            'country_id': country,
-                            'image_1920': '/' + photo_data_1,
-                            'survey_id': farmer_obj_id.id,
-                        })
+                            #  F13 Value (Is Married?)
+                            if farm['marital_status'][0] == 'Married':
+                                values.update({'is_married': 'Yes'})
+                            else:
+                                values.update({'is_married': 'No'})
 
-                        farmer = self.env['res.partner'].search([('farmer_survey_id', '=', 'farmer_survey_id')])
-                        if not farmer:
-                            part_id = farmer.create(values)
-                            no_kids = self.env['farmer.kids.details'].search(
-                                [('farmer_kids_details_id', '=', farmer_obj_id.id)])
-                            no_kids.write({'farmer_kids_details_res_partner_id': part_id})
+                            # F17 - F19 Values (No. Of Children)
+
+                            # if response_text['d'][0]['married'][0] == 'Yes':
+                            #     for name in response_text['d'][0]['name_of_kid']:
+                            #         pos_tion = response_text['d'][0]['name_of_kid'].index(name)
+                            #         age = response_text['d'][0]['age_of_kid'][pos_tion]
+                            #         gender = response_text['d'][0]['gender_of_kid'][pos_tion][0]
+                            #         # for age in response_text['d'][0]['age_of_kid']:
+                            #         #     for gender in response_text['d'][0]['gender_of_kid']:
+                            #         kids_objs = self.env['farmer.kids.details'].create({
+                            #             'farmer_kids_details_id': self.id,
+                            #             'farmer_kid_name': name,
+                            #             'farmer_kid_age': age,
+                            #             'farmer_kid_gender': gender,
+                            #         })
+
+                            # F21 Value (Does the farmer grow fruit trees?)
+
+                            if farm['farmer_grow_fruit_trees'][0] == 'Yes':
+                                values.update({'farmer_fruit_trees': 'Yes'})
+                            else:
+                                values.update({'farmer_fruit_trees': 'No'})
+
+                            # F24 Value (Does he have an energy efficient cook-stove?)
+                            if farm['have_energy_efficient_cookstove'][0] == 'Yes':
+                                values.update({'efficient_cook_stove': 'Yes'})
+                            else:
+                                values.update({'efficient_cook_stove': 'No'})
+
+                            # self.update(values)
+                            farmer_obj_id= self.env['farmer.survey'].create(values)
+
+                            if farm['name_of_kid']:
+                                for name in farm['name_of_kid']:
+                                    if name:
+                                        pos_tion = farm['name_of_kid'].index(name)
+                                        age = farm['age_of_kid'][pos_tion]
+                                        gender = farm['gender_of_kid'][pos_tion][0]
+                                        # for age in response_text['d'][0]['age_of_kid']:
+                                        #     for gender in response_text['d'][0]['gender_of_kid']:
+                                        kids_objs = self.env['farmer.kids.details'].create({
+                                            'farmer_kids_details_id': farmer_obj_id.id,
+                                            'farmer_kid_name': name,
+                                            'farmer_kid_age': age,
+                                            'farmer_kid_gender': gender,
+                                        })
+
+                            values.update({
+                                'company_type': 'person',
+                                'farmer_type': True,
+                                'type': '',
+                                'name': farm['farmer_name'],
+                                'country_id': country,
+                                'image_1920': '/' + photo_data_1,
+                                'survey_id': farmer_obj_id.id,
+                            })
+
+                            farmer = self.env['res.partner'].search([('farmer_survey_id', '=', 'farmer_survey_id')])
+                            if not farmer:
+                                part_id = farmer.create(values)
+                                no_kids = self.env['farmer.kids.details'].search([('farmer_kids_details_id', '=', farmer_obj_id.id)])
+                                no_kids.write({'farmer_kids_details_res_partner_id': part_id})
+                        else:
+                            raise ValidationError(_("No new records to Import"))
+
+
+
+
 
 
 class farmer_survey(models.Model):
