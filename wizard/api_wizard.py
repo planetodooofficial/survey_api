@@ -110,6 +110,7 @@ class ApiCallWizard(models.TransientModel):
         if sid:
             while (flag == True):
                 for count in range (1, page_count):
+                # for count in range (0, 1):
                     data_url = 'http://dms.agrotechltd.org/api/survey-data/search-data'
 
                     body_data = {
@@ -135,6 +136,7 @@ class ApiCallWizard(models.TransientModel):
                         children_list = []
                         survey_id = str(farm['_id'])
                         survey = self.env['farmer.survey'].search([('farmer_survey_id', '=', survey_id)])
+                        print(survey)
                         if not survey:
                             # F1 Value
                             district_values = {
@@ -245,7 +247,8 @@ class ApiCallWizard(models.TransientModel):
                                 values.update({'efficient_cook_stove': 'No'})
 
                             # self.update(values)
-                            farmer_obj_id= self.env['farmer.survey'].create(values)
+                            farmer_obj_id= self.env['farmer.survey'].sudo().create(values)
+                            self.env.cr.commit()
 
                             if farm['name_of_kid']:
                                 for name in farm['name_of_kid']:
@@ -278,7 +281,8 @@ class ApiCallWizard(models.TransientModel):
                                 no_kids = self.env['farmer.kids.details'].search([('farmer_kids_details_id', '=', farmer_obj_id.id)])
                                 no_kids.write({'farmer_kids_details_res_partner_id': part_id})
                         else:
-                            raise ValidationError(_("No new records to Import"))
+                            pass
+                            # raise ValidationError(_("No new records to Import"))
 
 
 
@@ -457,7 +461,7 @@ class ApiCallWizard(models.TransientModel):
                                 categ = categ.create(val_categ)
 
                             tree_name = response_text['tree_name'][0]
-                            tree_price_obj = self.env['product.prices'].search({('name', '=', tree_name)})
+                            tree_price_obj = self.env['product.prices'].search([('name', '=', tree_name)])
 
                             if not tree:
                                 prod_val.update({
