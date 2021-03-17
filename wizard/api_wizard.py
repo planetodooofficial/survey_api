@@ -135,10 +135,6 @@ class ApiCallWizard(models.TransientModel):
                     if response.status_code == 200:
                         response_text = json.loads(response.text)
 
-                    if not response_text['d']:
-                        flag = False
-                        break
-
                     for farm in response_text['d']:
                         values = {}
                         children_list = []
