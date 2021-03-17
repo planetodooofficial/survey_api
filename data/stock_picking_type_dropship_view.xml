@@ -1,5 +1,5 @@
 <odoo>
-    <data>
+    <data noupdate="1">
 
         <record id="first_project" model="config.survey">
             <field name="pid">5f0ea9f2b92e9cbc41480a7b</field>

@@ -496,7 +496,9 @@ class ApiCallWizard(models.TransientModel):
                                 categ = categ.create(val_categ)
 
                             tree_name = response_text['tree_name'][0]
-                            tree_price_obj = self.env['product.prices'].search([('name', '=', tree_name)])
+                            tree_price_obj = self.env['product.prices'].search([('name', 'ilike', tree_name)])
+
+                            _logger.info('---------- tree object found in price %s ----------', tree_price_obj)
 
                             if not tree:
                                 prod_val.update({
@@ -528,20 +530,20 @@ class ApiCallWizard(models.TransientModel):
                                 # farmer_supplier = self.env['product.supplierinfo'].create(seller_val)
 
 
-                                # lst = []
-                                #
-                                # vals = (0, 0, {
-                                #     'name': farmer.id or False,
-                                #     'min_qty': 1,
-                                #     'product_uom': product.uom_id.id,
-                                #     'price': product.standard_price,
-                                #     'product_name': product.name,
-                                #     'product_tmpl_id': product.id,
-                                # })
-                                #
-                                # lst.append(vals)
-                                #
-                                # product.write({'seller_ids': lst})
+                                lst = []
+
+                                vals = (0, 0, {
+                                    'name': farmer.id or False,
+                                    'min_qty': 1,
+                                    'product_uom': product.uom_id.id,
+                                    'price': product.standard_price,
+                                    'product_name': product.name,
+                                    'product_tmpl_id': product.id,
+                                })
+
+                                lst.append(vals)
+
+                                product.write({'seller_ids': lst})
 
 
                                 location = self.env['stock.location'].search([('name', '=', 'Stock')])
@@ -550,12 +552,12 @@ class ApiCallWizard(models.TransientModel):
 
                                 self.env.cr.commit()
 
-                                # self.env['stock.quant'].with_context(inventory_mode=True).create({
-                                #     'product_id': product.id,
-                                #     'location_id': location.id,
-                                #     'lot_id': False,
-                                #     'inventory_quantity': 1,
-                                # })
+                                self.env['stock.quant'].with_context(inventory_mode=True).create({
+                                    'product_id': product.id,
+                                    'location_id': location.id,
+                                    'lot_id': False,
+                                    'inventory_quantity': 1,
+                                })
 
                     count += 1
                     for_counter -= 1
