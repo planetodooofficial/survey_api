@@ -11,6 +11,7 @@
     'data': [
         'data/stock_quant_view.xml',
         'data/stock_picking_type_dropship_view.xml',
+        'data/survey_cron.xml',
         'security/ir.model.access.csv',
         'views/farmer_survey_view.xml',
         'wizard/product_batch_split_wizard.xml',

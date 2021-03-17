@@ -9,6 +9,9 @@ import logging
 import requests
 import json
 
+import logging
+_logger = logging.getLogger(__name__)
+
 
 class partner_inherit(models.Model):
     _inherit = 'res.partner'
@@ -127,6 +130,7 @@ class partner_inherit(models.Model):
                 response_text = json.loads(response.text)
 
                 page_count = response_text['Total']
+                _logger.info('---------- farmer page_count id %s ----------', page_count)
 
                 self.get_farmer_data(body_survey.pid, body_survey.snid, sid, page_count)
 
@@ -153,6 +157,7 @@ class partner_inherit(models.Model):
         if sid:
             while (flag == True):
                 for count in range (1, page_count):
+                    _logger.info('---------- pager_count id %s ----------', count)
                     data_url = 'http://dms.agrotechltd.org/api/survey-data/search-data'
 
                     body_data = {
@@ -290,6 +295,8 @@ class partner_inherit(models.Model):
                             # self.update(values)
                             farmer_obj_id= self.env['farmer.survey'].create(values)
 
+                            _logger.info('---------- imported farmer id %s ----------', farmer_obj_id.id)
+
                             if farm['name_of_kid']:
                                 for name in farm['name_of_kid']:
                                     if name:
@@ -321,7 +328,7 @@ class partner_inherit(models.Model):
                                 no_kids = self.env['farmer.kids.details'].search([('farmer_kids_details_id', '=', farmer_obj_id.id)])
                                 no_kids.write({'farmer_kids_details_res_partner_id': part_id})
                         else:
-                            raise ValidationError(_("No new records to Import"))
+                            raise ValidationError(_("No matching record found for farmer"))
 
 
 

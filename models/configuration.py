@@ -14,3 +14,6 @@ class Config_Survey(models.Model):
     pid = fields.Char('project_id')
     snid = fields.Char('SNid')
 
+    farmer_page_count = fields.Integer('Farmer Survey page Count')
+    tree_page_count = fields.Integer('Tree Survey page Count')
+

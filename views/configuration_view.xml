@@ -18,6 +18,15 @@
                                     <field name="snid" class="oe_inline" style="width: 70% !important;"/>
                                 </div>
                             </group>
+                            <group>
+                                <div>
+                                    <label for="farmer_page_count" string="Farmer Page Count"/>
+                                    <field name="farmer_page_count" class="oe_inline" style="width: 70% !important;"/>
+                                    <br/>
+                                    <label for="tree_page_count" string="Tree Page Count"/>
+                                    <field name="tree_page_count" class="oe_inline" style="width: 70% !important;"/>
+                                </div>
+                            </group>
                         </group>
                     </sheet>
                 </form>

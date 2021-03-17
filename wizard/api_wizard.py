@@ -3,6 +3,9 @@ from odoo.exceptions import UserError, ValidationError
 import requests
 import json
 
+import logging
+_logger = logging.getLogger(__name__)
+
 
 class ApiCallWizard(models.TransientModel):
     _name = 'api.wizard'
@@ -84,6 +87,7 @@ class ApiCallWizard(models.TransientModel):
                 response_text = json.loads(response.text)
 
                 page_count = response_text['Total']
+                _logger.info('---------- farmer total page_count id %s ----------', page_count)
 
                 self.get_farmer_data(body_survey.pid, body_survey.snid, sid, page_count)
 
@@ -107,9 +111,13 @@ class ApiCallWizard(models.TransientModel):
 
         flag = True
 
+        count = body_survey.farmer_page_count
+        for_counter = 2
+
         if sid:
             while (flag == True):
-                for count in range (1, page_count):
+                for count in range (body_survey.farmer_page_count, page_count+1):
+                    _logger.info('---------- current farmer page_count id %s ----------', count)
                 # for count in range (0, 1):
                     data_url = 'http://dms.agrotechltd.org/api/survey-data/search-data'
 
@@ -248,6 +256,10 @@ class ApiCallWizard(models.TransientModel):
 
                             # self.update(values)
                             farmer_obj_id= self.env['farmer.survey'].sudo().create(values)
+                            print(farmer_obj_id)
+
+                            _logger.info('---------- imported farmer id %s ----------', farmer_obj_id.id)
+
                             self.env.cr.commit()
 
                             if farm['name_of_kid']:
@@ -283,6 +295,15 @@ class ApiCallWizard(models.TransientModel):
                         else:
                             pass
                             # raise ValidationError(_("No new records to Import"))
+
+                    count += 1
+                    for_counter -= 1
+
+                    if for_counter == 0:
+                        flag = False
+                        break
+
+            body_survey.update({'farmer_page_count': count,})
 
 
 
@@ -324,7 +345,7 @@ class ApiCallWizard(models.TransientModel):
         response_filter = requests.post(url, data=json.dumps(body), headers=header)
         if response_filter.status_code == 200:
             response_text = json.loads(response_filter.text)
-            print(response_text)
+            # print(response_text)
             print("First API Call")
         else:
             raise ValidationError(_("There's something wrong! Please check your request again."))
@@ -336,6 +357,7 @@ class ApiCallWizard(models.TransientModel):
         for dict_item in response_text['d']:
             if dict_item['TName'] == "TREE":
                 sid = dict_item['_id']
+                print(dict_item)
         print(sid)
 
         if sid:
@@ -355,8 +377,10 @@ class ApiCallWizard(models.TransientModel):
             if response.status_code == 200:
                 response_text = json.loads(response.text)
                 print("Second API Call")
+                print(response_text)
 
                 page_count = response_text['Count']
+                _logger.info('---------- Tree page_count id %s ----------', page_count)
 
                 self.get_tree_data(body_survey.pid, body_survey.snid, sid, page_count)
 
@@ -378,8 +402,12 @@ class ApiCallWizard(models.TransientModel):
 
         body_survey = self.env['config.survey'].search([])
 
+        count = body_survey.tree_page_count
+        for_counter = 2
+
         if sid:
-            for count in range (1, page_count):
+            for count in range (body_survey.tree_page_count, page_count):
+                _logger.info('---------- current tree page_count id %s ----------', count)
                 data_url = 'http://dms.agrotechltd.org/api/survey-data/search-data'
 
                 body_data = {
@@ -418,13 +446,16 @@ class ApiCallWizard(models.TransientModel):
                             # phtoto_data_3 = photo_data_3.strip('data:image/jpeg;base64,')
 
                             farmer = self.env['res.partner'].search(
-                                [('farmer_id', '=', str(response_text['180_farmer_Id']))])
+                                [('farmer_id', 'ilike', str(response_text['180_farmer_Id']))])
+
 
                             loc = response_text['GPS']
 
                             location = ",".join([str(i) for i in loc])
 
                             if not farmer:
+                                _logger.info('---------- farmer 180 id %s ----------', response_text['180_farmer_Id'])
+
                                 farmer.get_farmer_survey_details()
                                 farmer = self.env['res.partner'].search(
                                     [('farmer_id', '=', str(response_text['180_farmer_Id']))])
@@ -445,6 +476,10 @@ class ApiCallWizard(models.TransientModel):
 
                             # self.write(values)
                             new_tree_survey_obj = self.env['tree.survey'].create(values)
+
+                            self.env.cr.commit()
+
+                            _logger.info('---------- new_tree_survey_obj id %s ----------', new_tree_survey_obj)
 
                             tree = self.env['product.template'].search(
                                 [('tree_survey_id', '=', response_text['_id'])], limit=1)
@@ -521,9 +556,29 @@ class ApiCallWizard(models.TransientModel):
                                 #     'lot_id': False,
                                 #     'inventory_quantity': 1,
                                 # })
+
+                    count += 1
+                    for_counter -= 1
+
+                    if for_counter == 0:
+                        flag = False
+                        break
+
+                    body_survey.update({'tree_page_count': count, })
+
+
         else:
             raise ValidationError(_("There's something wrong! Please check your request again."))
         return True
+
+
+
+
+
+
+
+
+
 
 
 
