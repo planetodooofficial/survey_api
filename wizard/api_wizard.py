@@ -507,6 +507,7 @@ class ApiCallWizard(models.TransientModel):
                                     'route_ids': [(6, 0, [route_id.id])],
                                     'image_1920': '/' + phtoto_data_1,
                                     'survey_id': new_tree_survey_obj.id,
+                                    'website_published': True,
                                 })
 
                                 prod_val.update(values)
