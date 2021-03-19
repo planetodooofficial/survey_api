@@ -513,6 +513,7 @@ class ApiCallWizard(models.TransientModel):
                                 prod_val.update(values)
 
                                 product = tree.create(prod_val)
+                                self.env.cr.commit()
 
                                 # seller_val = {
                                 #     'name': farmer.id or 10,
@@ -544,13 +545,13 @@ class ApiCallWizard(models.TransientModel):
 
 
                                 location = self.env['stock.location'].search([('name', '=', 'Stock')])
-
+                                product_product = self.env['product.product'].search([('product_tmpl_id','=',product.id)], limit=1)
 
 
                                 self.env.cr.commit()
 
                                 self.env['stock.quant'].with_context(inventory_mode=True).create({
-                                    'product_id': product.id,
+                                    'product_id': product_product.id,
                                     'location_id': location.id,
                                     'lot_id': False,
                                     'inventory_quantity': 1,
