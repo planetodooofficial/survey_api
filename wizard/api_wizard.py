@@ -504,6 +504,7 @@ class ApiCallWizard(models.TransientModel):
                                     'type': 'product',
                                     'categ_id': categ.id,
                                     'list_price': tree_price_obj.price,
+                                    'description_sale': tree_price_obj.description,
                                     'route_ids': [(6, 0, [route_id.id])],
                                     'image_1920': '/' + phtoto_data_1,
                                     'survey_id': new_tree_survey_obj.id,

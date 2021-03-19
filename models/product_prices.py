@@ -6,3 +6,5 @@ class ProductPrices(models.Model):
 
     name = fields.Char('Name')
     price = fields.Float('Price')
+
+    description = fields.Text('Tree Description')
