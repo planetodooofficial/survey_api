@@ -6,5 +6,6 @@ class ProductPrices(models.Model):
 
     name = fields.Char('Name')
     price = fields.Float('Price')
+    generic_tree_img = fields.Binary(string='Tree Image')
 
     description = fields.Text('Tree Description')

@@ -449,18 +449,21 @@ class ApiCallWizard(models.TransientModel):
 
                             location = ",".join([str(i) for i in loc])
 
-                            if not farmer:
-                                _logger.info('---------- farmer 180 id %s ----------', response_text['180_farmer_Id'])
+                            # Commented as if there is no farmer the tree is imported with admin as its farmer. If tree is imported without
+                            # farmer the website flow will give error
 
-                                farmer.get_farmer_survey_details()
-                                farmer = self.env['res.partner'].search(
-                                    [('farmer_id', '=', str(response_text['180_farmer_Id']))])
+                            # if not farmer:
+                            #     _logger.info('---------- farmer 180 id %s ----------', response_text['180_farmer_Id'])
+                            #
+                            #     farmer.get_farmer_survey_details()
+                            #     farmer = self.env['res.partner'].search(
+                            #         [('farmer_id', '=', str(response_text['180_farmer_Id']))])
 
                             values.update({
                                 'tree_name': response_text['tree_name'][0],
                                 'tree_survey_id': response_text['_id'],  # Survey ID
                                 'farmer_id': response_text['180_farmer_Id'],
-                                'farmer_partner_id': farmer.id,
+                                'farmer_partner_id': farmer.id if farmer else 3,
                                 'country_id': farmer.country_id.id,
                                 'gps_location': response_text['GPS'],
                                 'tree_image_1': '/' + phtoto_data_1,
@@ -498,15 +501,15 @@ class ApiCallWizard(models.TransientModel):
 
                             if not tree:
                                 prod_val.update({
-                                    'farmer_name': farmer.id or False,
-                                    'farmer_id': farmer.farmer_id,
+                                    'farmer_name': farmer.id or 3,
+                                    'farmer_id': farmer.farmer_id or 3,
                                     'name': response_text['tree_name'][0],
                                     'type': 'product',
                                     'categ_id': categ.id,
                                     'list_price': tree_price_obj.price,
                                     'description_sale': tree_price_obj.description,
                                     'route_ids': [(6, 0, [route_id.id])],
-                                    'image_1920': '/' + phtoto_data_1,
+                                    'image_1920': '/' + tree_price_obj.generic_tree_img,
                                     'survey_id': new_tree_survey_obj.id,
                                     'website_published': True,
                                 })
@@ -532,7 +535,7 @@ class ApiCallWizard(models.TransientModel):
                                 lst = []
 
                                 vals = (0, 0, {
-                                    'name': farmer.id or False,
+                                    'name': farmer.id or 3,
                                     'min_qty': 1,
                                     'product_uom': product.uom_id.id,
                                     'price': product.standard_price,
