@@ -509,7 +509,7 @@ class ApiCallWizard(models.TransientModel):
                                     'list_price': tree_price_obj.price,
                                     'description_sale': tree_price_obj.description,
                                     'route_ids': [(6, 0, [route_id.id])],
-                                    'image_1920': '/' + tree_price_obj.generic_tree_img,
+                                    'image_1920': tree_price_obj.generic_tree_img,
                                     'survey_id': new_tree_survey_obj.id,
                                     'website_published': True,
                                 })
