@@ -190,6 +190,7 @@ class ApiCallWizard(models.TransientModel):
                                 'country_id': country,
                                 'farmer_name': farm['farmer_name'] +' '+ farm['farmer_last_name'],
                                 'farmer_id': farm['180_farmer_Id'],
+                                'farmer_180_id': int(farm['180_farmer_Id']),
                                 'farmer_photo_1': '/' + photo_data_1,  # F6
                                 'farmer_photo_2': '/' + photo_data_2,  # F7
                                 'farmer_photo_3': '/' + photo_data_3,  # F8
@@ -202,6 +203,7 @@ class ApiCallWizard(models.TransientModel):
                                 'farmer_husband_age': husband_age if husband_age else 0,
 
                                 'farmer_national_id': farm['national_ID'],
+                                'farmer_national_180_id': int(farm['national_ID']),
                                 'farmer_age': int(farm['age_of_farmer']),
                                 'farmer_children': int(farm['number_of_kids']) if farm['number_of_kids'] else '',
                                 'no_of_kids_ids': children_list,  # F17 - F19
@@ -442,7 +444,7 @@ class ApiCallWizard(models.TransientModel):
                             # phtoto_data_3 = photo_data_3.strip('data:image/jpeg;base64,')
 
                             farmer = self.env['res.partner'].search(
-                                [('farmer_id', 'ilike', str(response_text['180_farmer_Id']))])
+                                [('farmer_180_id', '=', int(response_text['180_farmer_Id']))])
 
                             _logger.info('---------- error farmer 180 id %s ----------', response_text['180_farmer_Id'])
 

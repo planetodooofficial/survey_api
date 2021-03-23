@@ -32,12 +32,18 @@ class partner_inherit(models.Model):
     farmer_husband_age = fields.Integer("Husband's Age")
 
     farmer_id = fields.Char("Farmer's 180 ID")
+
+    farmer_180_id = fields.Integer("Farmer's 180 ID")
+
     farmer_photo_1 = fields.Binary("Farmer's Photo 1 (Whole body in front of hut)", required=False)
     farmer_photo_2 = fields.Binary("Farmer's Photo 2 (Whole body in front of hut)", required=False)
     farmer_photo_3 = fields.Binary("Farmer's Photo 3 (Whole body ideally next to trees)")
     farmer_photo_4 = fields.Binary("Farmer's Photo 4 (With whole family)")
     # farmer_photo_5 = fields.Binary("Farmer's Photo 5 (Clear image of multiple trees of the farmer with whole family)")
     farmer_national_id = fields.Char("Farmer's National ID")
+
+    farmer_national_180_id = fields.Integer("Farmer's National ID")
+
     farmer_age = fields.Integer("Farmer's Age")
     is_married = fields.Selection([('Yes', 'Yes'), ('No', 'No')], string='Married')
     farmer_children = fields.Integer("No. Of Children")
@@ -355,12 +361,18 @@ class farmer_survey(models.Model):
     farmer_husband_age = fields.Integer("Husband's Age")
 
     farmer_id = fields.Char("Farmer's 180 ID")
+
+    farmer_180_id = fields.Integer("Farmer's 180 ID")
+
     farmer_photo_1 = fields.Binary("Farmer's Photo 1 (Whole body in front of hut)", required=False)
     farmer_photo_2 = fields.Binary("Farmer's Photo 2 (Whole body in front of hut)", required=False)
     farmer_photo_3 = fields.Binary("Farmer's Photo 3 (Whole body ideally next to trees)")
     farmer_photo_4 = fields.Binary("Farmer's Photo 4 (With whole family)")
     # farmer_photo_5 = fields.Binary("Farmer's Photo 5 (Clear image of multiple trees of the farmer with whole family)")
     farmer_national_id = fields.Char("Farmer's National ID")
+
+    farmer_national_180_id = fields.Integer("Farmer's National ID")
+
     farmer_age = fields.Integer("Farmer's Age")
     is_married = fields.Selection([('Yes', 'Yes'), ('No', 'No')], string='Married')
     farmer_wife_name = fields.Char("Wife's Name")
@@ -377,6 +389,24 @@ class farmer_survey(models.Model):
     hours_taken_per_week = fields.Float('How many hours does this take per week?')
     # comments = fields.Text('Comments')
     # special_info_farmer = fields.Text('Special information about farmer')
+
+
+
+    def update_180_ids(self):
+        res_obj = self.env['res.partner'].search([])
+        farmer_obj = self.env['farmer.survey'].search([])
+
+        for res in res_obj:
+            if res.farmer_id and res.farmer_national_id:
+
+                res.update({'farmer_180_id': int(res.farmer_id), 'farmer_national_180_id': int(res.farmer_national_id),})
+
+
+        for farmer in farmer_obj:
+            if farmer.farmer_id and farmer.farmer_national_id:
+                farmer.update({'farmer_180_id': int(farmer.farmer_id), 'farmer_national_180_id': int(farmer.farmer_national_id), })
+
+
 
     # def get_farmer_survey_details(self):
     #

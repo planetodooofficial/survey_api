@@ -28,9 +28,10 @@
         <field name="model">farmer.survey</field>
         <field name="arch" type="xml">
             <form string="Farmer's Survey">
-<!--                <header>-->
+                <header>
 <!--                    <button name="get_farmer_survey_details" type="object" string="Get Response" class="oe_highlight"/>-->
-<!--                </header>-->
+                    <button name="update_180_ids" type="object" string="Update Farmer ID" class="oe_highlight"/>
+                </header>
                 <sheet>
                     <group>
                         <group name="Farmer's Info">
@@ -62,7 +63,13 @@
                         </group>
                         <group name="Farming Details">
                             <field name="farmer_national_id"/>
+
+                            <field name="farmer_national_180_id" invisible="1"/>
+
                             <field name="farmer_id"/>
+
+                            <field name="farmer_180_id" invisible="1"/>
+
                             <field name="farmer_farming_list"/>
                             <field name="farmer_fruit_trees"/>
                             <field name="no_of_tres_for_planting"/>
@@ -105,6 +112,9 @@
             </xpath>
              <xpath expr="//field[@name='parent_id']" position="after">
                 <field name="farmer_id" placeholder="Farmer's 180 ID" attrs="{'invisible':[('is_company', '=', True)]}"/>
+
+                <field name="farmer_180_id" placeholder="Farmer's 180 ID" invisible="1"/>
+
             </xpath>
             <xpath expr="//field[@name='street2']" position="after">
                 <field name="district" placeholder="District" attrs="{'invisible':[('is_company', '=', True)]}"/>
@@ -144,6 +154,9 @@
                         </group>
                         <group name="Farming Details">
                             <field name="farmer_national_id"/>
+
+                            <field name="farmer_national_180_id" invisible="1"/>
+
                             <field name="farmer_farming_list"/>
                             <field name="farmer_fruit_trees"/>
                             <field name="no_of_tres_for_planting"/>
