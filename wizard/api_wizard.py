@@ -444,6 +444,8 @@ class ApiCallWizard(models.TransientModel):
                             farmer = self.env['res.partner'].search(
                                 [('farmer_id', 'ilike', str(response_text['180_farmer_Id']))])
 
+                            _logger.info('---------- error farmer 180 id %s ----------', response_text['180_farmer_Id'])
+
 
                             loc = response_text['GPS']
 
