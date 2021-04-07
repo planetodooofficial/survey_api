@@ -7,4 +7,13 @@
         </record>
 
     </data>
+
+    <data noupdate="0">
+
+        <record id="farmer1" model="res.partner">
+            <field name="name">Farmer 1</field>
+            <field name="farmer_type">True</field>
+        </record>
+
+    </data>
 </odoo>

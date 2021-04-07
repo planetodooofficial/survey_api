@@ -463,11 +463,14 @@ class ApiCallWizard(models.TransientModel):
                             #     farmer = self.env['res.partner'].search(
                             #         [('farmer_id', '=', str(response_text['180_farmer_Id']))])
 
+                            # self.env.ref('survey_api.farmer1').id is the xml record id of Farmer1 refer data folder
+
                             values.update({
                                 'tree_name': response_text['tree_name'][0],
                                 'tree_survey_id': response_text['_id'],  # Survey ID
                                 'farmer_id': response_text['180_farmer_Id'],
-                                'farmer_partner_id': farmer.id if farmer else 3,
+                                # 'farmer_partner_id': farmer.id if farmer else 3,
+                                'farmer_partner_id': farmer.id if farmer else self.env.ref('survey_api.farmer1').id,
                                 'country_id': farmer.country_id.id,
                                 'gps_location': response_text['GPS'],
                                 'tree_image_1': '/' + phtoto_data_1,
@@ -505,8 +508,8 @@ class ApiCallWizard(models.TransientModel):
 
                             if not tree:
                                 prod_val.update({
-                                    'farmer_name': farmer.id or 3,
-                                    'farmer_id': farmer.farmer_id or 3,
+                                    'farmer_name': farmer.id or self.env.ref('survey_api.farmer1').id,
+                                    'farmer_id': farmer.farmer_id or self.env.ref('survey_api.farmer1').id,
                                     'name': response_text['tree_name'][0],
                                     'type': 'product',
                                     'categ_id': categ.id,
@@ -523,23 +526,11 @@ class ApiCallWizard(models.TransientModel):
                                 product = tree.create(prod_val)
                                 self.env.cr.commit()
 
-                                # seller_val = {
-                                #     'name': farmer.id or 10,
-                                #     'min_qty': 1,
-                                #     'product_uom': product.uom_id.id,
-                                #     'price': product.standard_price,
-                                #     'product_name': product.name,
-                                #     'product_id': self.env['product.product'].search(
-                                #         [('product_tmpl_id', '=', product.id)]).id,
-                                #     'product_tmpl_id': product.id,
-                                # }
-                                # farmer_supplier = self.env['product.supplierinfo'].create(seller_val)
-
-
+                                # Adding farmer as vendor
                                 lst = []
 
                                 vals = (0, 0, {
-                                    'name': farmer.id or 3,
+                                    'name': farmer.id or self.env.ref('survey_api.farmer1').id,
                                     'min_qty': 1,
                                     'product_uom': product.uom_id.id,
                                     'price': product.standard_price,
